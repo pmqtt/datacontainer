@@ -8,7 +8,7 @@
 #include <any>
 #include <string>
 #include <algorithm>
-
+#include <iostream>
 
 enum TYPE_KIND{
     INT,
@@ -38,6 +38,8 @@ public:
     }
 
     bool operator<(const DataType & rhs);
+
+    bool operator==(const DataType & rhs);
 
     std::size_t hash()const{
         return innerType->getHash();
@@ -130,21 +132,26 @@ struct std::hash<StringType>
     }
 };
 
+
+template<>
+struct std::hash<DataType>
+{
+    std::size_t operator()(const DataType &data)const noexcept{
+        return data.hash();
+    }
+};
+
+
 template<class TYPE,TYPE_KIND KIND>
 std::size_t TemplateType<TYPE,KIND>::getHash()const {
     return std::hash<TYPE>{}(this->value);
 }
 
 
-bool DataType::operator<(const DataType & rhs){
-    return this->hash() < rhs.hash();
-}
-
 struct DataTypeComparator{
     bool operator()(const DataType& a, const DataType& b) const {
         return a.hash() < b.hash();
     }
-
 };
 
 #endif //DATACONTAINER_DATATYPES_H

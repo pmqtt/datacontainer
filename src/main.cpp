@@ -1,5 +1,4 @@
 #include <iostream>
-#include "DataTypes.h"
 #include <algorithm>
 #include <map>
 #include "Storage.h"
@@ -23,6 +22,9 @@ int main() {
     DataType  plz3 ( new StringType("47805"),TYPE_KIND::STRING );
     DataType  tel( new IntType(123456),TYPE_KIND::INT);
 
+
+
+    std::cout<<std::hash<DataType>{}(plz1);
     testMap[plz1] = "Krefeld1";
     testMap[plz2] = "Krefeld2";
     testMap[plz3] = "Krefeld3";
@@ -33,6 +35,9 @@ int main() {
 
     createD01Table();
 
+    if(plz1 == DataType(new StringType("47803"),TYPE_KIND::STRING)){
+        std::cout<<" REIGHT " << std::endl;
+    }
 
     return 0;
 }
