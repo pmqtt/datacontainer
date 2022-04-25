@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <map>
 #include "Storage.h"
+#include "ConfigurationFile.h"
 
 /*
  * configure datatype MESSAGE_COUNT
@@ -14,8 +15,8 @@
 
 
 
-int main() {
-
+int main(int argc, char ** argv) {
+#if 0
     std::map<DataType, std::string,DataTypeComparator> testMap;
     DataType  plz1 ( new StringType("47803"),TYPE_KIND::STRING );
     DataType  plz2 ( new StringType("47804"),TYPE_KIND::STRING );
@@ -38,6 +39,8 @@ int main() {
     if(plz1 == DataType(new StringType("47803"),TYPE_KIND::STRING)){
         std::cout<<" REIGHT " << std::endl;
     }
-
+#endif
+    ConfigurationFile file(argv[1]);
+    file.load();
     return 0;
 }

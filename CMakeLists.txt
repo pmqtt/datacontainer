@@ -2,9 +2,10 @@ cmake_minimum_required(VERSION 3.16)
 project(datacontainer)
 
 set(CMAKE_CXX_STANDARD 17)
-message("HALLO WELT")
+
 
 find_package(Boost REQUIRED COMPONENTS system program_options log thread date_time chrono unit_test_framework log_setup)
+find_package( yaml-cpp REQUIRED )
 #add_definitions(-DBOOST_LOG_DYN_LINK)
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -17,7 +18,7 @@ add_library(OBJECT_LIB OBJECT ${ALL_OBJ} )
 
 add_executable(datacontainer src/main.cpp $<TARGET_OBJECTS:OBJECT_LIB>)
 
-target_link_libraries(datacontainer ${Boost} pthread )
+target_link_libraries(datacontainer ${Boost} pthread ${YAML_CPP_LIBRARIES} )
 set_target_properties(datacontainer PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 
@@ -33,7 +34,7 @@ foreach(testSrc ${TEST_SRCS})
         #Add compile target
         add_executable(${testName} ${testSrc} $<TARGET_OBJECTS:OBJECT_LIB>)
         message(${Boost_LIBRARIES})
-        target_link_libraries(${testName} pthread ${Boost_LIBRARIES})
+        target_link_libraries(${testName} pthread ${Boost_LIBRARIES} ${YAML_CPP_LIBRARIES} )
         #I like to move testing binaries into a testBin directory
         set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test/bin)
 

@@ -1,0 +1,18 @@
+types:
+  - SORT_DEST
+
+type:
+  expire_in: 20min
+  key: D01
+  name: SORT_DEST
+  values:
+    - UID: string
+    - DESTINATIONS:
+        list:
+          delimiter: ;
+          type: int
+    - LOOP: int
+    - ALGO:
+        enum:
+          - PRIO
+          - ANY

@@ -30,17 +30,17 @@ types:
      - SORT_DEST
 type:
    name: SORT_DEST
-   KEY: D01
-   VALUES:
-     - UID: STRING 
+   key: D01
+   values:
+     - UID: string 
      - DESTINATIONS: 
-           LIST:
-                TYPE: INT 
-                DELIMITER: ';'
+           list:
+                type: int 
+                delimiter: ';'
      - LOOP:
-           TYPE: INT 
+           type: int 
      - ALGO:
-         ENUM:
+         enum:
             - PRIO
             - ANY
     expire_in: 20min 

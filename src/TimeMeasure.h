@@ -20,7 +20,6 @@ template <class T>
 template<std::size_t loopCount = 1,typename TimeT = std::chrono::milliseconds>
 struct measure
 {
-	
 	measure(){
 	}
 	template<typename F,typename ...Args>

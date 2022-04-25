@@ -11,10 +11,6 @@
 #include "Memory.h"
 #include "DataTypes.h"
 
-
-
-
-
 template<class KEY,class VALUE>
 struct Bucket {
     KEY key;
@@ -79,7 +75,6 @@ template<class KEY, class VALUE, int N = 1009, int M = 1013, class STREAM = Hash
 template<class KEY,class VALUE, int N=HashStream::PRIME_ARRAY[0], int M = HashStream::PRIME_ARRAY[1], class STREAM = HashStream >
 #endif
 class Table {
-
 public:
     Table(){
         firstContainer = nullptr;
@@ -173,7 +168,6 @@ public:
     }
 
     VALUE & operator[](KEY && key) {
-
         std::size_t pos1 = hashForFirstContainer(key);
         if (firstContainer[pos1].hasItem && firstContainer[pos1].key == key) {
             return firstContainer[pos1].value;
