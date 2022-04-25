@@ -37,10 +37,10 @@ public:
 
 class ListField: public FieldProperty{
 private:
-    const char delimiter;
+    std::string delimiter;
 public:
-    ListField(const char delimiter) : delimiter(delimiter) {}
-    char getDelimiter() const { return delimiter; }
+    ListField(const std::string& delimiter) : delimiter(delimiter) {}
+    std::string getDelimiter() const { return delimiter; }
     bool is(const std::string & property) override{
         return property == "list";
     }

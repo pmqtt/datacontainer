@@ -34,7 +34,7 @@ void createD01Table(){
     Storage storage;
     StorageNode table = storage.addTable("D01");
     table.addField("UID",TYPE_KIND::STRING,std::make_shared<KeyField>());
-    table.addField("DESTINATIONS",TYPE_KIND::STRING,std::make_shared<ListField>(';'));
+    table.addField("DESTINATIONS",TYPE_KIND::STRING,std::make_shared<ListField>(";"));
     table.addField("LOOP",TYPE_KIND::INT,std::make_shared<SimpleField>());
     table.addField("ALGO",TYPE_KIND::STRING,std::make_shared<EnumField>(std::vector<std::string> { "PRIO","ANY" }));
 

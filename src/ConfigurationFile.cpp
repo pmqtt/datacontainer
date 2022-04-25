@@ -10,9 +10,9 @@
 // Load the yaml configuration file
 YamlTypeNode ConfigurationFile::load(){
     static std::map<std::string,YAML_VALUE_TYPE> strToType;
-    strToType["string"] = YAML_VALUE_TYPE::STRING;
-    strToType["int"] = YAML_VALUE_TYPE::INT;
-    strToType["real"] = YAML_VALUE_TYPE::REAL;
+    strToType["string"] = YAML_VALUE_TYPE::Y_STRING;
+    strToType["int"] = YAML_VALUE_TYPE::Y_INT;
+    strToType["real"] = YAML_VALUE_TYPE::Y_REAL;
 
     YAML::Node config = YAML::LoadFile(this->fileName);
     YAML::Node typesNode = config["types"];
@@ -41,21 +41,21 @@ YamlTypeNode ConfigurationFile::load(){
                         std::string valueType = valueDefs.second.as<std::string>();
                         if(valueType == "string"){
                             YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::STRING;
+                            valueTypeNode.type = YAML_VALUE_TYPE::Y_STRING;
                             valueTypeNode.value = std::make_shared<YamlStringType>();
                             valuesNode.value = valueTypeNode;
 
                         }
                         if(valueType == "int"){
                             YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::INT;
+                            valueTypeNode.type = YAML_VALUE_TYPE::Y_INT;
                             valueTypeNode.value = std::make_shared<YamlIntType>();
                             valuesNode.value = valueTypeNode;
 
                         }
                         if(valueType == "real"){
                             YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::REAL;
+                            valueTypeNode.type = YAML_VALUE_TYPE::Y_REAL;
                             valueTypeNode.value = std::make_shared<YamlRealType>();
                             valuesNode.value = valueTypeNode;
 
@@ -71,7 +71,7 @@ YamlTypeNode ConfigurationFile::load(){
                                 auto list = std::make_shared<YamlListType>();
                                 list->delimiter = delimiter;
                                 list->type = strToType[type];
-                                valueTypeNode.type = YAML_VALUE_TYPE::LIST;
+                                valueTypeNode.type = YAML_VALUE_TYPE::Y_LIST;
                                 valueTypeNode.value = list;
                                 valuesNode.value = valueTypeNode;
 
@@ -86,7 +86,7 @@ YamlTypeNode ConfigurationFile::load(){
                                 }
                                 auto enumValue = std::make_shared<YamlEnumType>();
                                 enumValue->enumItems = enumItems;
-                                valueTypeNode.type = YAML_VALUE_TYPE::ENUM;
+                                valueTypeNode.type = YAML_VALUE_TYPE::Y_ENUM;
                                 valueTypeNode.value = enumValue;
                                 valuesNode.value = valueTypeNode;
 

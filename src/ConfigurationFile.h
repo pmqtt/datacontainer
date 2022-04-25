@@ -7,11 +7,11 @@
 #include <string>
 #include "yaml-cpp/yaml.h"
 enum YAML_VALUE_TYPE{
-    LIST,
-    STRING,
-    INT,
-    REAL,
-    ENUM
+    Y_LIST,
+    Y_STRING,
+    Y_INT,
+    Y_REAL,
+    Y_ENUM
 };
 
 struct YamlIntType;
