@@ -6,44 +6,69 @@
 #define DATACONTAINER_CONFIGURATIONFILE_H
 #include <string>
 #include "yaml-cpp/yaml.h"
+#include "DataTypes.h"
+
 enum YAML_VALUE_TYPE{
     Y_LIST,
     Y_STRING,
     Y_INT,
     Y_REAL,
-    Y_ENUM
+    Y_ENUM,
+    Y_INDEX
 };
+
 
 struct YamlIntType;
 struct YamlRealType;
 struct YamlStringType;
 struct YamlListType;
 struct YamlEnumType;
+struct YamlIndexType;
+struct FieldProperty;
 
 
 struct YamlValueTypeBase{
     YamlValueTypeBase() = default;
     virtual ~YamlValueTypeBase() = default;
+    virtual std::shared_ptr<FieldProperty> createProperty()= 0;
+    virtual TYPE_KIND getTypeKind() = 0;
 };
 
-struct YamlIntType : public YamlValueTypeBase{};
-struct YamlRealType : public YamlValueTypeBase{};
-struct YamlStringType : public YamlValueTypeBase{};
+struct YamlIntType : public YamlValueTypeBase{
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
+
+};
+struct YamlRealType : public YamlValueTypeBase{
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
+};
+struct YamlStringType : public YamlValueTypeBase{
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
+};
 struct YamlListType : public YamlValueTypeBase{
     std::string delimiter;
     YAML_VALUE_TYPE type;
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
 };
 struct YamlEnumType : public YamlValueTypeBase{
     std::vector<std::string> enumItems;
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
 };
-struct YamlValueTypeNode{
-    YAML_VALUE_TYPE type;
-    std::shared_ptr<YamlValueTypeBase> value;
+
+struct YamlIndexType : public YamlValueTypeBase{
+    std::shared_ptr<FieldProperty> createProperty();
+    TYPE_KIND getTypeKind();
 };
+
+
 
 struct YamlValuesNode{
     std::string key;
-    YamlValueTypeNode value;
+    std::shared_ptr<YamlValueTypeBase> value;
 };
 
 struct YamlTypeNode{

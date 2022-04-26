@@ -2,9 +2,11 @@
 // Created by cefour on 22.04.22.
 //
 #include "ConfigurationFile.h"
+#include "Property.h"
 #include <iostream>
 #include <assert.h>
 #include <vector>
+
 
 
 // Load the yaml configuration file
@@ -40,56 +42,37 @@ YamlTypeNode ConfigurationFile::load(){
                     if(valueDefs.second.IsScalar()){
                         std::string valueType = valueDefs.second.as<std::string>();
                         if(valueType == "string"){
-                            YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::Y_STRING;
-                            valueTypeNode.value = std::make_shared<YamlStringType>();
-                            valuesNode.value = valueTypeNode;
-
+                            valuesNode.value = std::make_shared<YamlStringType>();
                         }
                         if(valueType == "int"){
-                            YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::Y_INT;
-                            valueTypeNode.value = std::make_shared<YamlIntType>();
-                            valuesNode.value = valueTypeNode;
-
+                            valuesNode.value = std::make_shared<YamlIntType>();
                         }
                         if(valueType == "real"){
-                            YamlValueTypeNode valueTypeNode;
-                            valueTypeNode.type = YAML_VALUE_TYPE::Y_REAL;
-                            valueTypeNode.value = std::make_shared<YamlRealType>();
-                            valuesNode.value = valueTypeNode;
-
+                            valuesNode.value = std::make_shared<YamlRealType>();
+                        }
+                        if(valueType == "index"){
+                            valuesNode.value = std::make_shared<YamlIndexType>();
                         }
                     }else{
                         for(const auto & valueDef: valueDefs.second){
                             std::string valueType = valueDef.first.as<std::string>();
                             if(valueType == "list"){
-                                YamlValueTypeNode valueTypeNode;
-
                                 std::string delimiter = valueDef.second["delimiter"].as<std::string>();
                                 std::string type = valueDef.second["type"].as<std::string>();
                                 auto list = std::make_shared<YamlListType>();
                                 list->delimiter = delimiter;
                                 list->type = strToType[type];
-                                valueTypeNode.type = YAML_VALUE_TYPE::Y_LIST;
-                                valueTypeNode.value = list;
-                                valuesNode.value = valueTypeNode;
-
+                                valuesNode.value = list;
 
                             }
                             if(valueType == "enum"){
-                                YamlValueTypeNode valueTypeNode;
                                 std::vector<std::string> enumItems;
                                 for(const auto & enumerations : valueDef.second){
                                     enumItems.push_back(enumerations.Scalar());
-
                                 }
                                 auto enumValue = std::make_shared<YamlEnumType>();
                                 enumValue->enumItems = enumItems;
-                                valueTypeNode.type = YAML_VALUE_TYPE::Y_ENUM;
-                                valueTypeNode.value = enumValue;
-                                valuesNode.value = valueTypeNode;
-
+                                valuesNode.value = enumValue;
                             }
                         }
                     }
@@ -101,4 +84,48 @@ YamlTypeNode ConfigurationFile::load(){
         yamlTypeNode.values.push_back(valuesNode);
     }
     return yamlTypeNode;
+}
+
+std::shared_ptr <FieldProperty> YamlIntType::createProperty() {
+    return std::make_shared<SimpleField>();
+}
+
+std::shared_ptr <FieldProperty> YamlRealType::createProperty() {
+    return std::make_shared<SimpleField>();
+}
+
+std::shared_ptr <FieldProperty> YamlStringType::createProperty() {
+    return std::make_shared<SimpleField>();
+}
+
+std::shared_ptr <FieldProperty> YamlEnumType::createProperty() {
+    return std::make_shared<EnumField>(this->enumItems);
+}
+
+std::shared_ptr <FieldProperty> YamlListType::createProperty() {
+    return std::make_shared<ListField>(this->delimiter);
+}
+
+std::shared_ptr<FieldProperty> YamlIndexType::createProperty() {
+    return std::make_shared<KeyField>();
+}
+
+TYPE_KIND YamlIntType::getTypeKind() {
+    return TYPE_KIND::INT;
+}
+TYPE_KIND YamlRealType::getTypeKind() {
+    return TYPE_KIND::REAL;
+}
+TYPE_KIND YamlStringType::getTypeKind() {
+    return TYPE_KIND::STRING;
+}
+TYPE_KIND YamlListType::getTypeKind() {
+    return TYPE_KIND::STRING;
+}
+TYPE_KIND YamlEnumType::getTypeKind() {
+    return TYPE_KIND::STRING;
+}
+
+TYPE_KIND YamlIndexType::getTypeKind() {
+    return TYPE_KIND::STRING;
 }

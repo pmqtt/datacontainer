@@ -6,7 +6,7 @@ type:
   key: D01
   name: SORT_DEST
   values:
-    - UID: string
+    - UID: index
     - DESTINATIONS:
         list:
           delimiter: ;
