@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 find_package(Boost REQUIRED COMPONENTS system program_options log thread date_time chrono unit_test_framework log_setup)
 find_package( yaml-cpp REQUIRED )
+find_package(cpprestsdk REQUIRED)
 #add_definitions(-DBOOST_LOG_DYN_LINK)
 
 include_directories(${Boost_INCLUDE_DIRS})
@@ -18,7 +19,7 @@ add_library(OBJECT_LIB OBJECT ${ALL_OBJ} )
 
 add_executable(datacontainer src/main.cpp $<TARGET_OBJECTS:OBJECT_LIB>)
 
-target_link_libraries(datacontainer ${Boost} pthread ${YAML_CPP_LIBRARIES} )
+target_link_libraries(datacontainer ${Boost} pthread ${YAML_CPP_LIBRARIES} cpprestsdk::cpprest )
 set_target_properties(datacontainer PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR})
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
 

@@ -86,7 +86,7 @@ public:
     ConfigurationFile(const std::string & fileName){
         this->fileName = fileName;
     }
-    YamlTypeNode load();
+    std::vector<YamlTypeNode> load();
 
 private:
     std::string fileName;

@@ -1,9 +1,27 @@
 types:
-  - SORT_DEST
+  - SORT_DEST_EM01
+  - SORT_DEST_EM02
 
-type:
+SORT_DEST_EM01:
   expire_in: 20min
   key: D01
+  name: SORT_DEST
+  values:
+    - UID: index
+    - DESTINATIONS:
+        list:
+          delimiter: ;
+          type: int
+    - LOOP: int
+    - ALGO:
+        enum:
+          - PRIO
+          - ANY
+
+
+SORT_DEST_EM02:
+  expire_in: 20min
+  key: D02
   name: SORT_DEST
   values:
     - UID: index
