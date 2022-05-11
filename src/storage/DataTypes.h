@@ -26,6 +26,10 @@ public:
         this->innerType = type;
         this->kind = kind;
     }
+    DataType(DataType * type){
+        this->innerType = type;
+        this->kind = type->kind;
+    }
 
     virtual ~DataType() = default;
     bool isInteger() { return isType(TYPE_KIND::INT);     }

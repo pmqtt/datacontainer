@@ -6,7 +6,7 @@
 #define DATACONTAINER_CONFIGURATIONFILE_H
 #include <string>
 #include "yaml-cpp/yaml.h"
-#include "DataTypes.h"
+#include "storage/DataTypes.h"
 
 enum YAML_VALUE_TYPE{
     Y_LIST,
@@ -64,11 +64,86 @@ struct YamlIndexType : public YamlValueTypeBase{
     TYPE_KIND getTypeKind();
 };
 
+struct YamlReadEventNode{
+    std::string connectionType;
+    std::string brokerAdr;
+    std::string subscribe;
+    std::string format;
+    std::map<std::string,std::string> insertions;
+    std::vector<YamlReadEventNode> nextEvents;
+};
+
+struct YamlSendEventNode{
+    std::string connectionType;
+    std::string brokerAdr;
+    std::string topic;
+    std::string prepare;
+};
+
+namespace YAML {
+    template<>
+    struct convert<YamlReadEventNode> {
+        static Node encode(const YamlReadEventNode& rhs) {
+            Node node;
+           /* node.push_back(rhs.x);
+            node.push_back(rhs.y);
+            node.push_back(rhs.z);*/
+            return node;
+        }
+
+        static bool decode(const Node& node, YamlReadEventNode& rhs) {
+            rhs.connectionType = node["type"].as<std::string>();
+            rhs.brokerAdr = node["broker"].as<std::string>();
+            rhs.subscribe = node["subscribe"].as<std::string>();
+            rhs.format = node["format"].as<std::string>();
+            std::remove(rhs.format.begin(), rhs.format.end(), '\"');
+
+            for(int i = 0; i < node["insert"].size(); ++i){
+                for(const auto & iter : node["insert"][i]){
+                    rhs.insertions[iter.first.as<std::string>()] = iter.second.as<std::string>();
+                }
+            }
+            if(node["read_event"].IsDefined()) {
+                rhs.nextEvents.push_back(node["read_event"].as<YamlReadEventNode>());
+            }
+            return true;
+        }
+    };
+
+    template<>
+    struct convert<YamlSendEventNode> {
+        static Node encode(const YamlSendEventNode& rhs) {
+            Node node;
+            return node;
+        }
+
+        static bool decode(const Node& node, YamlSendEventNode& rhs) {
+/*
+ *   send_event:
+    - type: mqtt
+    - broker: localhost:1883
+    - topic: CALCULATED
+    - prepare: mean(TEMPERATURE)
+    - when:
+        - count(TEMPERATURE) >= 3
+        - reset: true
+ */
+            rhs.connectionType = node["type"].as<std::string>();
+            rhs.brokerAdr = node["broker"].as<std::string>();
+            rhs.topic = node["topic"].as<std::string>();
+            rhs.prepare = node["prepare"].as<std::string>();
+            return true;
+        }
+    };
+
+}
+
 
 
 struct YamlValuesNode{
     std::string key;
     std::shared_ptr<YamlValueTypeBase> value;
+
 };
 
 struct YamlTypeNode{
@@ -76,6 +151,8 @@ struct YamlTypeNode{
     std::string typeName;
     std::string key;
     std::vector<YamlValuesNode> values;
+    YamlReadEventNode readEvent;
+    YamlSendEventNode sendEvent;
 };
 
 

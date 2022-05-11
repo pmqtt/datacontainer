@@ -25,32 +25,74 @@ Cache GET/D01/ALGO=PRIO&LOOP=1 für und verknüpfung
 
 
 ### Data Definition
-`
+```yaml
 types:
-     - SORT_DEST
-type:
-   name: SORT_DEST
-   key: D01
-   values:
-     - UID: string 
-     - DESTINATIONS: 
-           list:
-                type: int 
-                delimiter: ';'
-     - LOOP:
-           type: int 
-     - ALGO:
-         enum:
-            - PRIO
-            - ANY
-    expire_in: 20min 
+     - TEMPERATURE_SENSOR_01
+     
+TEMPERATURE_SENSOR_01:
+  expire_in: 20min
+  key: T_S01
+  name: TEMPERATURE_SENSOR
+  value:
+    - ID: index
+    - TIMESTAMP: string
+    - TEMPERATURE: real
+  read_event:
+    - type: mqtt
+    - broker: localhost:1883
+    - subscribe: SENSOR/01/TEMPERATURE
+    - format: "%r"
+    - insert:
+        - ID: ink_index(0)
+        - TIMESTAMP: timestamp
+        - TEMPERATURE: $1
+  send_event:
+    - type: mqtt
+    - broker: localhost:1883
+    - topic: CALCULATED
+    - prepare: mean(TEMPERATURE)
+    - when:
+      - count(TEMPERATURE) >= 3
+      - reset: true
            
-`
+``` 
+
+#### Erläuterung
+  - **expire_in:**
+
+            Daten die im Container eingefügt werden haben für Gewöhnlich ein Verfallsdatum.
+            Erlaubte Werte sind: ms,s,min,h,d
+  - **expire_when:**
+
+            Daten die im Container eingefügt werden haben für Gewöhnlich ein Verfallsdatum.
+            Erlaubte Werte sind: count (>|<|>=|<=|==|!=) number oder yyyy-mm-dd hh:mm:ss + (dd hh:mm:ss)
+  - **key:** 
+
+            Mit key wird der nach außen Sichtbare Name der Tabelle angegeben
+  - **name:**
+
+            Interne Name des Typs in der YAML Datei
+  - **value:**
+
+            In diesem Block wird der eigentlich Typ spezifiziert. Im Allgemeinen gilt die Key Typ Structure. Das heißt 
+            key: (index|string|real|enum|list)
+    - ***index:***
+    
+            Ein Value der vom Typ index ist, nachdiesem kann in Konstanterzeit gesucht werden. 
+            Ist kein Index angegeben so wird die erste key:Typ Paar genutzt.
+    - ***string:***
+
+            Ein Value der vom Typ string ist, darf alle Zeichen speichern die im ASCII Code erlaubt sind. 
+            Seine maximale Länge wird durch das System begrenzt. 
+    - ***real:***
+    
+            Ein Value der vom Typ real ist, dient der Repräsentation von Zahlen. Als Dezimaltrenner wird das "." 
+            verwendet.
+
 
 
 ### REST API
 
 ### Funktionsweise Storage
-
-
 Storage ist eine map dessen Values auf maps verweisen die wiederum Tabellen sind 
+

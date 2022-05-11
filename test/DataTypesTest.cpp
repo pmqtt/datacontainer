@@ -4,13 +4,13 @@
 
 #define BOOST_TEST_DYN_LINK 1
 #define BOOST_TEST_MODULE DataTypesTest
-#include <boost/test/unit_test.hpp>
+#include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/Table.h"
-#include "../src/PrimeStream.h"
-#include "../src/TimeMeasure.h"
-#include "../src/DataTypes.h"
+#include "../src/storage/Table.h"
+#include "../src/storage/PrimeStream.h"
+#include "../src/storage/TimeMeasure.h"
+#include "../src/storage/DataTypes.h"
 #include <algorithm>
 
 

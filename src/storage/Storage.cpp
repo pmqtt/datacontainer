@@ -8,7 +8,6 @@ void StorageNode::addField(const std::string & name,TYPE_KIND kind,const std::sh
     fields[name] = field;
 }
 
-
 void StorageNode::insertRow(const std::vector<std::pair<std::string,DataType>> & row){
     if(row.size() != fields.size()){
         std::cout<<"-4:"<<row.size() << " | " <<fields.size()<<std::endl;
@@ -17,14 +16,19 @@ void StorageNode::insertRow(const std::vector<std::pair<std::string,DataType>> &
     std::pair<std::string,DataType> p;
     std::vector<DataType> rest;
     for(auto & iter : row){
-        StorageField field = fields[iter.first];
-        if(field.property->is("key")){         
+        if(fields.count(iter.first) == 0){
+        }else {
+            StorageField field = fields[iter.first];
+            if (field.property->is("key")) {
                 p = iter;
-        }else{
-            rest.push_back(iter.second);
+            } else {
+                rest.push_back(iter.second);
+                fields[iter.first].positionInData = rest.size()-1;
+            }
         }
     }
     datas[p.second] = rest;
+
 
 }
 
@@ -32,20 +36,20 @@ void StorageNode::insertRow(const std::vector<std::pair<std::string,DataType>> &
 
 void createD01Table(){
     Storage storage;
-    StorageNode table = storage.addTable("D01");
-    table.addField("UID",TYPE_KIND::STRING,std::make_shared<KeyField>());
-    table.addField("DESTINATIONS",TYPE_KIND::STRING,std::make_shared<ListField>(";"));
-    table.addField("LOOP",TYPE_KIND::INT,std::make_shared<SimpleField>());
-    table.addField("ALGO",TYPE_KIND::STRING,std::make_shared<EnumField>(std::vector<std::string> { "PRIO","ANY" }));
+    std::shared_ptr<StorageNode> table = storage.addTable("D01");
+    table->addField("UID",TYPE_KIND::STRING,std::make_shared<KeyField>());
+    table->addField("DESTINATIONS",TYPE_KIND::STRING,std::make_shared<ListField>(";"));
+    table->addField("LOOP",TYPE_KIND::INT,std::make_shared<SimpleField>());
+    table->addField("ALGO",TYPE_KIND::STRING,std::make_shared<EnumField>(std::vector<std::string> { "PRIO","ANY" }));
 
-    table.insertRow({
+    table->insertRow({
                         {"UID",DataType(new StringType("012345678"),TYPE_KIND::STRING)},
                         {"DESTINATIONS",DataType(new StringType("11511;11211"),TYPE_KIND::STRING)},
                         {"LOOP",DataType(new IntType(1),TYPE_KIND::INT)},
                         {"ALGO",DataType(new StringType("ANY"),TYPE_KIND::STRING)},
                     });
 
-    auto values = table.getRow(DataType(new StringType("012345678"),TYPE_KIND::STRING));
+    auto values = table->getRow(DataType(new StringType("012345678"),TYPE_KIND::STRING));
 
 
     for(const auto & iter : values){
@@ -55,4 +59,5 @@ void createD01Table(){
 
 
 }
+
 

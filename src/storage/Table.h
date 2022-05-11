@@ -284,7 +284,23 @@ public:
             }
         }
         return resultList;
+    }
 
+    std::list<VALUE> convertToList(){
+        std::list<VALUE> resultList;
+        for(std::size_t i = 0 ; i < currentSizeFirstContainer; ++i){
+            if(firstContainer[i].hasItem){
+               resultList.push_back(firstContainer[i].value);
+            }
+
+        }
+
+        for(std::size_t i = 0; i < currentSizeSecondContainer; ++i){
+            if(secondContainer[i].hasItem){
+                resultList.push_back(secondContainer[i].value);
+            }
+        }
+        return resultList;
     }
 
     void updateAllItems(std::function<void (const KEY &key,VALUE&)> func){

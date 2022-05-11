@@ -1,36 +1,30 @@
 types:
-  - SORT_DEST_EM01
-  - SORT_DEST_EM02
+  - TEMPERATURE_SENSOR_01
 
-SORT_DEST_EM01:
+TEMPERATURE_SENSOR_01:
   expire_in: 20min
-  key: D01
-  name: SORT_DEST
+  key: T_S01
+  name: TEMPERATURE_SENSOR
   values:
-    - UID: index
-    - DESTINATIONS:
-        list:
-          delimiter: ;
-          type: int
-    - LOOP: int
-    - ALGO:
-        enum:
-          - PRIO
-          - ANY
-
-
-SORT_DEST_EM02:
-  expire_in: 20min
-  key: D02
-  name: SORT_DEST
-  values:
-    - UID: index
-    - DESTINATIONS:
-        list:
-          delimiter: ;
-          type: int
-    - LOOP: int
-    - ALGO:
-        enum:
-          - PRIO
-          - ANY
+    - ID: index
+    - TIMESTAMP: string
+    - TEMPERATURE: real
+    - MESSAGE: string
+  read_event:
+    type: mqtt
+    broker: localhost:1883
+    subscribe: SENSOR/01/TEMPERATURE
+    format: "%r %s"
+    insert:
+      - ID: ink_index(0)
+      - TIMESTAMP: timestamp
+      - TEMPERATURE: $1
+      - MESSAGE: $2
+  send_event:
+    type: mqtt
+    broker: localhost:1883
+    topic: CALCULATED
+    prepare: mean(TEMPERATURE)
+    when:
+      - count(TEMPERATURE) >= 3
+      - reset: true

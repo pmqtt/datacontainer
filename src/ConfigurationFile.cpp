@@ -2,12 +2,23 @@
 // Created by cefour on 22.04.22.
 //
 #include "ConfigurationFile.h"
-#include "Property.h"
+#include "storage/Property.h"
 #include <iostream>
 #include <assert.h>
 #include <vector>
+#include "exceptions/TypedefException.h"
+template<class T>
+void loadNodeOptional(const std::string &nodeName, T* value,YAML::Node & node){
+    *value = node[nodeName].as<T>();
+}
 
-
+template<class T>
+void loadNode(const std::string &nodeName, T* value,YAML::Node & node){
+    if(!node[nodeName].IsDefined()){
+        throw TypedefException("Node: " + nodeName + "for correct type definition is needed!");
+    }
+    *value = node[nodeName].as<T>();
+}
 
 // Load the yaml configuration file
 std::vector<YamlTypeNode> ConfigurationFile::load(){
@@ -22,68 +33,61 @@ std::vector<YamlTypeNode> ConfigurationFile::load(){
     for(const auto & typeDefNames: typesNode) {
         YAML::Node typeNode = config[typeDefNames.as<std::string>()];
         YamlTypeNode yamlTypeNode;
-        yamlTypeNode.expire_in = typeNode["expire_in"].as<std::string>();
-        yamlTypeNode.typeName = typeNode["name"].as<std::string>();
-        yamlTypeNode.key = typeNode["key"].as<std::string>();
+        yamlTypeNode.typeName = typeDefNames.as<std::string>();
+        loadNodeOptional<std::string>("expire_in",&(yamlTypeNode.expire_in),typeNode);
+        loadNode<std::string>("key",&(yamlTypeNode.key),typeNode);
+        //yamlTypeNode.expire_in = typeNode["expire_in"].as<std::string>();
+        //yamlTypeNode.key = typeNode["key"].as<std::string>();
         for (const auto &values: typeNode["values"]) {
             YamlValuesNode valuesNode;
-            switch (values.Type()) {
-                case YAML::NodeType::Null :
-                    break;
-                case YAML::NodeType::Scalar:
-                    std::cout << values << " S" << std::endl;
-                    break;
-                case YAML::NodeType::Sequence:
-                    std::cout << values << " SEQ" << std::endl;
-                    break;
-                case YAML::NodeType::Map:
-                    for (const auto &valueDefs: values) {
-                        valuesNode.key = valueDefs.first.as<std::string>();
-                        if (valueDefs.second.IsScalar()) {
-                            std::string valueType = valueDefs.second.as<std::string>();
-                            if (valueType == "string") {
-                                valuesNode.value = std::make_shared<YamlStringType>();
-                            }
-                            if (valueType == "int") {
-                                valuesNode.value = std::make_shared<YamlIntType>();
-                            }
-                            if (valueType == "real") {
-                                valuesNode.value = std::make_shared<YamlRealType>();
-                            }
-                            if (valueType == "index") {
-                                valuesNode.value = std::make_shared<YamlIndexType>();
-                            }
-                        } else {
-                            for (const auto &valueDef: valueDefs.second) {
-                                std::string valueType = valueDef.first.as<std::string>();
-                                if (valueType == "list") {
-                                    std::string delimiter = valueDef.second["delimiter"].as<std::string>();
-                                    std::string type = valueDef.second["type"].as<std::string>();
-                                    auto list = std::make_shared<YamlListType>();
-                                    list->delimiter = delimiter;
-                                    list->type = strToType[type];
-                                    valuesNode.value = list;
+            if(YAML::NodeType::Map == values.Type()){
+                for (const auto &valueDefs: values) {
+                    valuesNode.key = valueDefs.first.as<std::string>();
+                    if (valueDefs.second.IsScalar()) {
+                        std::string valueType = valueDefs.second.as<std::string>();
+                        if (valueType == "string") {
+                            valuesNode.value = std::make_shared<YamlStringType>();
+                        }
+                        if (valueType == "int") {
+                            valuesNode.value = std::make_shared<YamlIntType>();
+                        }
+                        if (valueType == "real") {
+                            valuesNode.value = std::make_shared<YamlRealType>();
+                        }
+                        if (valueType == "index") {
+                            valuesNode.value = std::make_shared<YamlIndexType>();
+                        }
+                    } else {
+                        for (const auto &valueDef: valueDefs.second) {
+                            std::string valueType = valueDef.first.as<std::string>();
+                            if (valueType == "list") {
+                                std::string delimiter = valueDef.second["delimiter"].as<std::string>();
+                                std::string type = valueDef.second["type"].as<std::string>();
+                                auto list = std::make_shared<YamlListType>();
+                                list->delimiter = delimiter;
+                                list->type = strToType[type];
+                                valuesNode.value = list;
 
+                            }
+                            if (valueType == "enum") {
+                                std::vector<std::string> enumItems;
+                                for (const auto &enumerations: valueDef.second) {
+                                    enumItems.push_back(enumerations.Scalar());
                                 }
-                                if (valueType == "enum") {
-                                    std::vector<std::string> enumItems;
-                                    for (const auto &enumerations: valueDef.second) {
-                                        enumItems.push_back(enumerations.Scalar());
-                                    }
-                                    auto enumValue = std::make_shared<YamlEnumType>();
-                                    enumValue->enumItems = enumItems;
-                                    valuesNode.value = enumValue;
-                                }
+                                auto enumValue = std::make_shared<YamlEnumType>();
+                                enumValue->enumItems = enumItems;
+                                valuesNode.value = enumValue;
                             }
                         }
                     }
-
-                    break;
-                case YAML::NodeType::Undefined:
-                    break;
+                }
             }
             yamlTypeNode.values.push_back(valuesNode);
         }
+
+
+        yamlTypeNode.readEvent = typeNode["read_event"].as<YamlReadEventNode>();
+        yamlTypeNode.sendEvent = typeNode["send_event"].as<YamlSendEventNode>();
         result.push_back(yamlTypeNode);
     }
     return result;
