@@ -13,11 +13,11 @@ void loadNodeOptional(const std::string &nodeName, T* value,YAML::Node & node){
 }
 
 template<class T>
-void loadNode(const std::string &nodeName, T* value,YAML::Node & node){
+T loadNode(const std::string &nodeName,YAML::Node & node){
     if(!node[nodeName].IsDefined()){
         throw TypedefException("Node: " + nodeName + "for correct type definition is needed!");
     }
-    *value = node[nodeName].as<T>();
+    return node[nodeName].as<T>();
 }
 
 // Load the yaml configuration file
@@ -35,10 +35,9 @@ std::vector<YamlTypeNode> ConfigurationFile::load(){
         YamlTypeNode yamlTypeNode;
         yamlTypeNode.typeName = typeDefNames.as<std::string>();
         loadNodeOptional<std::string>("expire_in",&(yamlTypeNode.expire_in),typeNode);
-        loadNode<std::string>("key",&(yamlTypeNode.key),typeNode);
-        //yamlTypeNode.expire_in = typeNode["expire_in"].as<std::string>();
-        //yamlTypeNode.key = typeNode["key"].as<std::string>();
-        for (const auto &values: typeNode["values"]) {
+        yamlTypeNode.key = loadNode<std::string>("key",typeNode);
+        YAML::Node valueItems = loadNode<YAML::Node>("values",typeNode);
+        for (const auto &values: valueItems) {
             YamlValuesNode valuesNode;
             if(YAML::NodeType::Map == values.Type()){
                 for (const auto &valueDefs: values) {
