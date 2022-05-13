@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(datacontainer)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 
 find_package(Boost REQUIRED COMPONENTS system program_options log thread date_time chrono unit_test_framework log_setup python)
@@ -13,7 +13,7 @@ find_package(Python3 COMPONENTS Interpreter Development)
 
 include_directories(${Boost_INCLUDE_DIRS})
 
-file(GLOB ALL_OBJ "src/*.cpp" "src/*.h" "src/exceptions/*.cpp" "src/exceptions/*.h" "src/storage/*.cpp" "src/storage/*.h")
+file(GLOB ALL_OBJ "src/*.cpp" "src/*.h" "src/exceptions/*.cpp" "src/exceptions/*.h" "src/storage/*.cpp" "src/storage/*.h" "src/api/*.h" "src/api/*.cpp")
 
 list(REMOVE_ITEM ALL_OBJ ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
