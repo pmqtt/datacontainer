@@ -30,7 +30,10 @@ using Millisecond = NamedType<int,MillisecondParameter>;
 using Microsecond = NamedType<int,MicrosecondParameter>;
 using Nanosecond = NamedType<int,NanosecondParameter>;
 
-
+template<>
+struct isCovertable<YearParameter,MonthParameter> {
+    static constexpr bool value = true;
+};
 
 class DateTime{
 private:

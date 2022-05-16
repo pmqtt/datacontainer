@@ -7,7 +7,14 @@
 #include <string>
 #include <exception>
 
-
+template<class X,class Y>
+struct isCovertable {
+    static constexpr bool value = std::is_same<X, Y>::value;
+    constexpr bool test(){
+        if constexpr (std::is_same<X,Y>::value) return true;
+        return false;
+    }
+};
 template <typename T, template <typename> class crtpType>
 struct Crtp{
     constexpr T& underlying(){
@@ -72,6 +79,18 @@ Y operator+(const Y & other ,const T & operand) {
     }
     throw std::exception();
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
