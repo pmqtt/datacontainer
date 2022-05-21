@@ -6,7 +6,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/Format.h"
+#include "../src/api/Format.h"
 #include <algorithm>
 
 

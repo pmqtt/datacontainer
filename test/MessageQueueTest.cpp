@@ -4,7 +4,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/MessageQueue.h"
+#include "../src/api/MessageQueue.h"
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>

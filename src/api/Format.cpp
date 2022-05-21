@@ -13,25 +13,24 @@ void Format::parse(){
                     this->formatList.push_back(std::make_shared<FormatTypeWord>(wordBuffer));
                     wordBuffer = "";
                 }
-                switch (format[i+1]){
-                    case 'r':{
-                        this->formatList.push_back(std::make_shared<FormatTypeReal>());
-                        i++;
-                        break;
-                    }
-                    case 's':{
-                        this->formatList.push_back(std::make_shared<FormatTypeString>());
-                        i++;
-                        break;
-                    }
+                if( formatSpecifier.count(format[i+1]) > 0){
+                    this->formatList.push_back(formatSpecifier[format[i+1]]->create());
+                    i++;
+                }else{
+                    wordBuffer += "%"+format[i+1];
+                    i++;
                 }
 
             }else{
-                //IGNORE
+                wordBuffer += format[i];
+                this->formatList.push_back(std::make_shared<FormatTypeWord>(wordBuffer));
             }
         }else{
             wordBuffer += format[i];
         }
+    }
+    if(!wordBuffer.empty()){
+        this->formatList.push_back(std::make_shared<FormatTypeWord>(wordBuffer));
     }
 }
 bool Format::interpret(const std::string & x){

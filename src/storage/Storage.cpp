@@ -1,4 +1,5 @@
 #include "Storage.h"
+#include "../exceptions/StorageNodeInsertionException.h"
 
 void StorageNode::addField(const std::string & name,TYPE_KIND kind,const std::shared_ptr<FieldProperty> & prop){
     StorageField field;
@@ -10,8 +11,7 @@ void StorageNode::addField(const std::string & name,TYPE_KIND kind,const std::sh
 
 void StorageNode::insertRow(const std::vector<std::pair<std::string,DataType>> & row){
     if(row.size() != fields.size()){
-        std::cout<<"-4:"<<row.size() << " | " <<fields.size()<<std::endl;
-        exit(-4);
+        throw StorageNodeInsertionException("Size of inserted row with " + std::to_string(row.size()) + " differ from expected value " + std::to_string(fields.size()));
     }
     std::pair<std::string,DataType> p;
     std::vector<DataType> rest;
@@ -32,7 +32,7 @@ void StorageNode::insertRow(const std::vector<std::pair<std::string,DataType>> &
 
 }
 
-
+#if 0
 
 void createD01Table(){
     Storage storage;
@@ -59,5 +59,5 @@ void createD01Table(){
 
 
 }
-
+#endif
 

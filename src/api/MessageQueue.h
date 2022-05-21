@@ -13,7 +13,7 @@
 #include <queue>
 #include <thread>
 
-#include "exceptions/MessageQueueDeactivateException.h"
+#include "../exceptions/MessageQueueDeactivateException.h"
 
 
 template <typename T>

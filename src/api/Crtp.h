@@ -6,15 +6,28 @@
 #define DATACONTAINER_CRTP_H
 #include <string>
 #include <exception>
+#include "MacroHelper.h"
 
 template<class X,class Y>
-struct isCovertable {
+struct isConvertable {
     static constexpr bool value = std::is_same<X, Y>::value;
     constexpr bool test(){
         if constexpr (std::is_same<X,Y>::value) return true;
         return false;
     }
+    static X convert( Y && rhs ){
+        return static_cast<X>(rhs);
+    }
 };
+
+#define CONVERTABLE_BOTH(X,Y) \
+    template<> struct isConvertable<X,Y> { static constexpr bool value = true; }; \
+    template<> struct isConvertable<Y,X> { static constexpr bool value = true;};
+
+
+
+
+
 template <typename T, template <typename> class crtpType>
 struct Crtp{
     constexpr T& underlying(){
@@ -41,49 +54,48 @@ struct Addable: Crtp<T, Addable >{
     Addable(const T &x){
         this->underlying().get() = x.underlying().get();
     }
-    template<class Y>
+    template<class Y> requires (isConvertable<typename T::PARAMETER,typename Y::PARAMETER>::value)
     T operator+(const Y & other) const{
-        std::string_view s1(T::PARAMETER::tag);
-        std::string_view s2(Y::PARAMETER::tag);
-        if (s1 == s2){
             return T(this->underlying().get() + other.get());
-        }
-        throw std::exception();
     }
-    template<class Y>
+    template<class Y> requires (isConvertable<typename T::PARAMETER,typename Y::PARAMETER>::value)
     T& operator+=(const Y & other){
-        std::string_view s1(T::PARAMETER::tag);
-        std::string_view s2(Y::PARAMETER::tag);
-        if (s1 == s2) {
             this->underlying().get() += other.get();
             return this->underlying();
-        }
-        throw std::exception();
     }
-
 };
 
-template <typename T>
-concept PARA =
-requires(T m) {  // any `m` that is a Machine
-    T::tag;
+template<class T>
+struct Stringable : Crtp<T,Stringable>{
+    Stringable() = default;
+    Stringable(const T &x){
+        this->underlying().get() = x.underlying().get();
+    }
+    std::string toString()const{
+        return std::to_string(this->underlying().get());
+    }
 };
 
-template<class T,class Y>
-    requires (PARA<T>,PARA<Y>)
+
+
+template<class T,class Y> requires (isConvertable<typename T::PARAMETER,typename Y::PARAMETER>::value)
 Y operator+(const Y & other ,const T & operand) {
-    std::string_view s1(T::PARAMETER::tag);
-    std::string_view s2(Y::PARAMETER::tag);
-    if (s1 == s2) {
-        return Y{other.get() + operand.get()};
-    }
-    throw std::exception();
+    return Y{isConvertable<typename Y::TYPE,typename T::TYPE>::convert( other.get() + operand.get() )};
+}
+
+template<class T,class Y> requires (isConvertable<typename T::PARAMETER,typename Y::PARAMETER>::value)
+Y operator-(const Y & other ,const T & operand) {
+    return Y{isConvertable<typename Y::TYPE,typename T::TYPE>::convert( other.get() - operand.get() )};
 }
 
 
+#define CREATE_STRONG_TYPE(NAME,TYPE) \
+    struct NAME ## _PARAMETER { }; \
+    using NAME = NamedType<TYPE,NAME ## _PARAMETER>
 
-
-
+#define CREATE_STRONG_FIELD_TYPE(NAME,TYPE) \
+    struct NAME ## _PARAMETER { }; \
+    using NAME = NamedType<TYPE,NAME ## _PARAMETER,Addable,Stringable>
 
 
 

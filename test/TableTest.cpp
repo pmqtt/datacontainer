@@ -4,9 +4,9 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/storage/Table.h"
-#include "../src/storage/PrimeStream.h"
-#include "../src/storage/TimeMeasure.h"
+#include "../src/datastructure/Table.h"
+#include "../src/api/PrimeStream.h"
+#include "../src/api/TimeMeasure.h"
 #include <algorithm>
 class TestItem{
 	public:

@@ -5,10 +5,10 @@
 #ifndef DATACONTAINER_DATACONTAINERSERVICE_H
 #define DATACONTAINER_DATACONTAINERSERVICE_H
 
-#include "ConfigurationFile.h"
-#include "Format.h"
-#include "MqttMessenger.h"
-#include "SmartThread.h"
+#include "typeconfig/ConfigurationFile.h"
+#include "api/Format.h"
+#include "connector/MqttMessenger.h"
+#include "api/SmartThread.h"
 #include "storage/Storage.h"
 #include <map>
 #include <tuple>

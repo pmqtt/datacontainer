@@ -4,29 +4,11 @@
 
 #ifndef DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H
 #define DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H
-#include <string>
-#include <exception>
+#include "../api/ExceptionMacro.h"
 
-class MessageQueueDeactivateException : public std::exception {
-public:
-#if defined (__GNUC__) || defined (__GUNG__)
-    MessageQueueDeactivateException(const std::string & message) : std::exception() {
-        this->msg = message;
-    }
-    const char * what() const noexcept {
-        return this->msg.c_str();
-    }
+CREATE_EXCEPTION_CLASS(MessageQueueDeactivateException)
 
-#else
-    MessageQueueDeactivateException(const std::string & message) : std::exception(message.c_str()) {}
-			const char * what() const {
-				return exception::what();
-			}
-#endif
-private:
-    std::string msg;
 
-};
 
 
 #endif //DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H

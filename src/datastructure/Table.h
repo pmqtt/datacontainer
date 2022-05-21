@@ -7,9 +7,9 @@
 #include <list>
 #include <functional>
 #include <boost/pool/singleton_pool.hpp>
-#include "HashStream.h"
-#include "Memory.h"
-#include "DataTypes.h"
+#include "../api/HashStream.h"
+#include "../api/Memory.h"
+#include "../storage/DataTypes.h"
 
 template<class KEY,class VALUE>
 struct Bucket {

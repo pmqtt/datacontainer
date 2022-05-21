@@ -10,9 +10,9 @@
 #include <vector>
 #include <memory>
 #include "DataTypes.h"
-#include "../MessageQueue.h"
+#include "../api/MessageQueue.h"
 #include "Property.h"
-#include "Table.h"
+#include "../datastructure/Table.h"
 
 struct StorageField{
     std::string name;
@@ -66,7 +66,6 @@ public:
 private:
     int index;
     std::map<std::string,StorageField> fields;
-    //std::map<DataType,std::vector<DataType>,DataTypeComparator> datas;
     Table<DataType,std::vector<DataType>> datas;
     MessageQueue<std::string> queue;
 };
@@ -91,12 +90,7 @@ private:
 };
 
 
-/*
- * D01
- *  UID|DESTINATIONS|LOOP|ALGO
- *
- * */
 
-void createD01Table();
+
 
 #endif //DATACONTAINER_STORAGE_H

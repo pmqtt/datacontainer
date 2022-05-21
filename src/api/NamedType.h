@@ -10,7 +10,9 @@ template <typename T, typename Parameter, template <typename> class... Skills>
 class NamedType : public Parameter, public Skills<NamedType<T, Parameter, Skills...>>... {
 public:
     using PARAMETER = Parameter;
+    using TYPE = T;
 public:
+    explicit NamedType(){ }
     explicit NamedType(T const& value) : value_(value) {}
     explicit NamedType(T&& value) : value_(std::move(value)) {}
     T& get() { return value_; }

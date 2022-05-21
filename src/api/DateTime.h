@@ -6,36 +6,26 @@
 #define DATACONTAINER_DATETIME_H
 #include <string>
 #include <chrono>
+#include <functional>
+#include <map>
 
+#include "Format.h"
 #include "Crtp.h"
 #include "NamedType.h"
 
-struct YearParameter { };
-struct MonthParameter{ };
-struct DayParameter  { };
-struct HourParameter { };
-struct MinuteParameter { };
-struct SecondParameter { };
-struct MillisecondParameter { };
-struct MicrosecondParameter { };
-struct NanosecondParameter { };
+CREATE_STRONG_FIELD_TYPE(Year,long);
+CREATE_STRONG_FIELD_TYPE(Month,long);
+CREATE_STRONG_FIELD_TYPE(Day,long);
+CREATE_STRONG_FIELD_TYPE(Hour,long);
+CREATE_STRONG_FIELD_TYPE(Minute,long);
+CREATE_STRONG_FIELD_TYPE(Second,long);
+CREATE_STRONG_FIELD_TYPE(Millisecond,long);
+CREATE_STRONG_FIELD_TYPE(Microsecond,long);
+CREATE_STRONG_FIELD_TYPE(Nanosecond,long);
 
-using Year = NamedType<int,YearParameter>;
-using Month = NamedType<int,MonthParameter>;
-using Day = NamedType<int,DayParameter>;
-using Hour =NamedType<int,HourParameter>;
-using Minute = NamedType<int,MinuteParameter>;
-using Second = NamedType<int,SecondParameter>;
-using Millisecond = NamedType<int,MillisecondParameter>;
-using Microsecond = NamedType<int,MicrosecondParameter>;
-using Nanosecond = NamedType<int,NanosecondParameter>;
 
-template<>
-struct isCovertable<YearParameter,MonthParameter> {
-    static constexpr bool value = true;
-};
 
-class DateTime{
+class DateTime : public FormatTypeVisitor{
 private:
     Year year;
     Month month;
@@ -46,9 +36,33 @@ private:
     Millisecond milliseconds;
     Microsecond microseconds;
     Nanosecond nanoseconds;
+private:
+    Format format;
+    mutable std::string formattedDate;
+public:
+    DateTime() { }
+    static DateTime timestamp();
+public:
+    void setFormat(const std::string & format);
+    std::string toString() const;
 
 public:
-    DateTime() = default;
+    void visit(FormatTypeReadableMonth * f);
+    void visit(FormatTypeMonth * f);
+    void visit(FormatTypeWord * f);
+    void visit(FormatTypeYear * f);
+    void visit(FormatTypeShortYear * f);
+    void visit(FormatTypeDay * f);
+    void visit(FormatTypeTime * f);
+    void visit(FormatTypeTimeAll * f);
+    void visit(FormatTypeTimeHour * f);
+    void visit(FormatTypeTimeSecond * f);
+    void visit(FormatTypeTimeMinute * f);
+    void visit(FormatTypeTimeMilli * f);
+    void visit(FormatTypeTimeMicro * f);
+    void visit(FormatTypeTimeNano * f);
+
+
 
 };
 
