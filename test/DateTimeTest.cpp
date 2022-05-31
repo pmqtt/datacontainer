@@ -33,9 +33,9 @@ BOOST_AUTO_TEST_SUITE(DateTimeTestSuite)
     BOOST_AUTO_TEST_CASE(DateTimeTest){
 /*
         DateTime date;
-        using Myfloat = NamedType<float,MyfloatParameter,Addable>;
-        using Myint = NamedType<int,MyintParameter,Addable>;
-        using Mytime = NamedType<int,MytimeParameter,Addable,Stringable>;
+        using Myfloat = NamedType<float,MyfloatParameter,addable>;
+        using Myint = NamedType<int,MyintParameter,addable>;
+        using Mytime = NamedType<int,MytimeParameter,addable,stringable>;
         Myfloat f1{1};
         Myint f2{3};
         Myfloat f = f1 + f2;
