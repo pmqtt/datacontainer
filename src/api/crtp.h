@@ -7,7 +7,7 @@
 
 #include <string>
 #include <exception>
-#include "MacroHelper.h"
+#include "macro_helper.h"
 
 template<class X, class Y>
 struct is_convertable {
@@ -24,8 +24,8 @@ struct is_convertable {
 };
 
 #define CONVERTABLE_BOTH(X, Y) \
-    template<> struct isConvertable<X,Y> { static constexpr bool value = true; }; \
-    template<> struct isConvertable<Y,X> { static constexpr bool value = true;};
+    template<> struct is_convertable<X,Y> { static constexpr bool value = true; }; \
+    template<> struct is_convertable<Y,X> { static constexpr bool value = true;};
 
 
 template<typename T, template<typename> class crtpType>
@@ -79,7 +79,7 @@ struct stringable : crtp<T, stringable> {
         this->underlying().get() = x.underlying().get();
     }
 
-    std::string toString() const {
+    std::string to_string() const {
         return std::to_string(this->underlying().get());
     }
 };
@@ -104,7 +104,7 @@ Y operator-(const Y &other, const T &operand) {
 
 #define CREATE_STRONG_FIELD_TYPE(NAME, TYPE) \
     struct NAME ## _PARAMETER { }; \
-    using NAME = NamedType<TYPE,NAME ## _PARAMETER,addable,stringable>
+    using NAME = named_type<TYPE,NAME ## _PARAMETER,addable,stringable>
 
 
 #endif //DATACONTAINER_CRTP_H

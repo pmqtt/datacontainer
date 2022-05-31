@@ -1,0 +1,14 @@
+//
+// Created by cefour on 11.05.22.
+//
+
+#ifndef DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H
+#define DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H
+#include "../api/exception_macro.h"
+
+CREATE_EXCEPTION_CLASS(message_queue_deactivate_exception)
+
+
+
+
+#endif //DATACONTAINER_MESSAGEQUEUEDEACTIVATEDEXCEPTION_H

@@ -7,20 +7,20 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/datastructure/Table.h"
-#include "../src/api/PrimeStream.h"
-#include "../src/api/TimeMeasure.h"
-#include "../src/storage/DataTypes.h"
+#include "../src/datastructure/table.h"
+#include "../src/api/prime_stream.h"
+#include "../src/api/time_measure.h"
+#include "../src/storage/data_types.h"
 #include <algorithm>
 
 
 BOOST_AUTO_TEST_SUITE(DataTypesTestSuite)
 
 BOOST_AUTO_TEST_CASE(DataTypeConstructorTest){
-    DataType type(new IntType(123),TYPE_KIND::INT);
-    BOOST_CHECK_MESSAGE(type.isInteger(),"Expected Int Type");
-    BOOST_CHECK_MESSAGE(!type.isReal(),"Expected Int Type");
-    BOOST_CHECK_MESSAGE(!type.isString(),"Expected Int Type");
+    data_type type(new int_type(123), TYPE_KIND::INT);
+    BOOST_CHECK_MESSAGE(type.is_integer(), "Expected Int Type");
+    BOOST_CHECK_MESSAGE(!type.is_real(), "Expected Int Type");
+    BOOST_CHECK_MESSAGE(!type.is_string(), "Expected Int Type");
 }
 
 BOOST_AUTO_TEST_SUITE_END()

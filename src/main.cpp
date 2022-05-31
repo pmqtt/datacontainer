@@ -1,31 +1,31 @@
 #include <iostream>
 #include <algorithm>
 #include <map>
-#include "storage/Storage.h"
-#include "typeconfig/TypeDefintionFile.h"
-#include "DataContainerService.h"
-#include "api/Logger.h"
+#include "storage/storage.h"
+#include "typeconfig/type_defintion_file.h"
+#include "data_container_service.h"
+#include "api/logger.h"
 
 
 
 int main(int argc, char ** argv) {
     UNUSED(argc);
     UNUSED(argv);
-    logger::Logger l;
+    logger::logger l;
     l.log(logger::LEVEL::INFO,"PROGRAM START");
-    TypeDefintionFile file(argv[1]);
+    type_defintion_file file(argv[1]);
     auto configs = file.load();
-    Storage storage;
+    storage storage;
     for(auto & config : configs) {
-        std::shared_ptr<StorageNode> table = storage.addTable(config.key);
+        std::shared_ptr<storage_node> table = storage.add_table(config.key);
         for (auto &iter: config.values) {
-            table->addField(iter.key,
-                           iter.value->getTypeKind(),
-                           iter.value->createProperty());
+            table->add_field(iter.key,
+                             iter.value->get_type_kind(),
+                             iter.value->create_property());
         }
     }
 
-    DataContainerService service(configs,storage);
+    data_container_service service(configs, storage);
     service.run();
 
 

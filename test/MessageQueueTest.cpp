@@ -4,7 +4,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/api/MessageQueue.h"
+#include "../src/api/message_queue.h"
 #include <iostream>
 #include <thread>
 #include <boost/asio.hpp>
@@ -17,11 +17,11 @@
 BOOST_AUTO_TEST_SUITE(TEST_MESSAGE_QUEUE)
 
     BOOST_AUTO_TEST_CASE(TestConstruction){
-       MessageQueue<int> queue;
+       message_queue<int> queue;
     }
 
     BOOST_AUTO_TEST_CASE(TestPushPop){
-       MessageQueue<int> queue;
+       message_queue<int> queue;
         boost::thread t1([&](){
             for(int i = 0; i< 100; ++i) {
                 queue.push(i);
@@ -36,7 +36,7 @@ BOOST_AUTO_TEST_SUITE(TEST_MESSAGE_QUEUE)
     }
 
     BOOST_AUTO_TEST_CASE(TestPushPopStdThread){
-        MessageQueue<int> queue;
+        message_queue<int> queue;
         std::thread t1([&](){
             for(int i = 0; i< 100; ++i) {
                 queue.push(i);
@@ -53,7 +53,7 @@ BOOST_AUTO_TEST_SUITE(TEST_MESSAGE_QUEUE)
 
     BOOST_AUTO_TEST_CASE(TestDeactivate) {
         try {
-           MessageQueue<int> queue;
+           message_queue<int> queue;
             boost::thread t1([&]() {
                 try {
                     queue.pop();

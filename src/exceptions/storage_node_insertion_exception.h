@@ -1,0 +1,13 @@
+//
+// Created by cefour on 18.05.22.
+//
+
+#ifndef DATACONTAINER_STORAGE_NODE_INSERTION_EXCEPTION_H
+#define DATACONTAINER_STORAGE_NODE_INSERTION_EXCEPTION_H
+#include "../api/exception_macro.h"
+
+
+CREATE_EXCEPTION_CLASS(storage_node_insertion_exception)
+
+
+#endif //DATACONTAINER_STORAGE_NODE_INSERTION_EXCEPTION_H

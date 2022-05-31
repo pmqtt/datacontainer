@@ -6,7 +6,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/api/DateTime.h"
+#include "../src/api/date_time.h"
 #include <algorithm>
 struct MyintParameter {
     constexpr static  const char tag[] ="number";
@@ -32,10 +32,10 @@ BOOST_AUTO_TEST_SUITE(DateTimeTestSuite)
 
     BOOST_AUTO_TEST_CASE(DateTimeTest){
 /*
-        DateTime date;
-        using Myfloat = NamedType<float,MyfloatParameter,addable>;
-        using Myint = NamedType<int,MyintParameter,addable>;
-        using Mytime = NamedType<int,MytimeParameter,addable,stringable>;
+        date_time date;
+        using Myfloat = named_type<float,MyfloatParameter,addable>;
+        using Myint = named_type<int,MyintParameter,addable>;
+        using Mytime = named_type<int,MytimeParameter,addable,stringable>;
         Myfloat f1{1};
         Myint f2{3};
         Myfloat f = f1 + f2;
@@ -45,15 +45,15 @@ BOOST_AUTO_TEST_SUITE(DateTimeTestSuite)
         BOOST_CHECK_MESSAGE(g.get() == 4,"SHOULD 4 is " + std::to_string(g.get()));
         Mytime t1(12);
 
-        BOOST_CHECK(t1.toString()=="12");
+        BOOST_CHECK(t1.to_string()=="12");
 */
        // Mytime t = t1 + f2;
 
-        DateTime dateTime = DateTime::timestamp();
-        dateTime.setFormat("%Y-%m-%d %h:%i:%s.%l");
-        std::cout<<dateTime.toString()<<std::endl;
-        dateTime.setFormat("Es ist %h Uhr %i und %s Sekunden");
-        std::cout<<dateTime.toString()<<std::endl;
+        date_time dateTime = date_time::timestamp();
+        dateTime.set_format("%Y-%m-%d %h:%i:%s.%l");
+        std::cout << dateTime.to_string() << std::endl;
+        dateTime.set_format("Es ist %h Uhr %i und %s Sekunden");
+        std::cout << dateTime.to_string() << std::endl;
     }
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -34,14 +34,14 @@ TEMPERATURE_SENSOR_01:
   key: T_S01
   name: TEMPERATURE_SENSOR
   value:
-    - ID: index
+    - ID: base_index
     - TIMESTAMP: string
     - TEMPERATURE: real
   read_event:
     - type: mqtt
     - broker: localhost:1883
     - subscribe: SENSOR/01/TEMPERATURE
-    - format: "%r"
+    - format_def: "%r"
     - insert:
         - ID: ink_index(0)
         - TIMESTAMP: timestamp
@@ -75,11 +75,11 @@ TEMPERATURE_SENSOR_01:
   - **value:**
 
             In diesem Block wird der eigentlich Typ spezifiziert. Im Allgemeinen gilt die Key Typ Structure. Das heißt 
-            key: (index|string|real|enum|list)
-    - ***index:***
+            key: (base_index|string|real|enum|list)
+    - ***base_index:***
     
-            Ein Value der vom Typ index ist, nachdiesem kann in Konstanterzeit gesucht werden. 
-            Ist kein Index angegeben so wird die erste key:Typ Paar genutzt.
+            Ein Value der vom Typ base_index ist, nachdiesem kann in Konstanterzeit gesucht werden. 
+            Ist kein base_index angegeben so wird die erste key:Typ Paar genutzt.
     - ***string:***
 
             Ein Value der vom Typ string ist, darf alle Zeichen speichern die im ASCII Code erlaubt sind. 
@@ -93,6 +93,6 @@ TEMPERATURE_SENSOR_01:
 
 ### REST API
 
-### Funktionsweise Storage
-Storage ist eine map dessen Values auf maps verweisen die wiederum Tabellen sind 
+### Funktionsweise container
+container ist eine map dessen Values auf maps verweisen die wiederum Tabellen sind 
 

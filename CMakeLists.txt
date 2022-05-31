@@ -29,7 +29,6 @@ add_library(OBJECT_LIB OBJECT ${ALL_OBJ} )
 add_executable(datacontainer src/main.cpp $<TARGET_OBJECTS:OBJECT_LIB>)
 string(REPLACE "." "" BOOST_PYTHON_VERSION ${Boost_PYTHON_VERSION})
 
-message(FOUND BOOST PYTHON IN VERSION ${BOOST_PYTHON_VERSION})
 
 target_link_libraries(datacontainer  ${Boost_LIBRARIES} pthread ${YAML_CPP_LIBRARIES} cpprestsdk::cpprest  paho-mqttpp3 paho-mqtt3c paho-mqtt3cs paho-mqtt3a paho-mqtt3as Python3::Python boost_python${BOOST_PYTHON_VERSION} )
 
