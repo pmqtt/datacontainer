@@ -1,7 +1,7 @@
-# DataContainer
+# Data Chakra
 **Cache für deine Daten**
 ## Projektidee
-DataContainer - Ermöglicht Daten in strukturierter Form von anderen Services zu 
+Data Chakra - Ermöglicht Daten in strukturierter Form von anderen Services zu 
 speichern und für andere Services bereitstellen. Dabei kann der DataContainer Service
 verschiedene Schnittstellen anbieten, wie z.B. MQTT, REST oder gPRC... Des Weiteren sind die
 Daten nicht persistent gehalten sondern mit einem Ablaufdatum versehen... Im Grunde ist die Idee, 

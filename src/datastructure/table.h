@@ -6,6 +6,7 @@
 #include <utility>
 #include <list>
 #include <functional>
+#include <tuple>
 #include <boost/pool/singleton_pool.hpp>
 #include "../api/hash_stream.h"
 #include "../api/memory.h"
@@ -73,6 +74,132 @@ template<class KEY, class VALUE, int N = 1009, int M = 1013, class STREAM = hash
 template<class KEY,class VALUE, int N=hash_stream::PRIME_ARRAY[0], int M = hash_stream::PRIME_ARRAY[1], class STREAM = hash_stream >
 #endif
 class table {
+public:
+    struct iterator{
+
+        using iterator_category = std::forward_iterator_tag;
+        using difference_type   = std::ptrdiff_t;
+        using value_type        = VALUE;
+        using pointer           = std::pair<KEY,VALUE*>;  // or also value_type*
+        using reference         = std::pair<KEY,VALUE&>;  // or also value_type&
+
+
+        iterator(bucket<KEY,VALUE> * container1,int c1_size, bucket<KEY,VALUE> * container2,int c2_size): first_container(container1),second_container(container2){
+            container1_size = c1_size;
+            container2_size = c2_size;
+            if(container1 == nullptr && container2 == nullptr){
+                _ptr1 = nullptr;
+                _ptr2 = nullptr;
+
+            }else{
+                if(container1 != nullptr){
+                    index = find_first_valid_index(container1,c1_size);
+                    if(index != -1){
+                        use_container1 = true;
+                        _ptr1 = &container1[index].value;
+                        _ptr2 = &container1[index].value;
+
+
+
+
+                    }else{
+                        index = find_first_valid_index(container2,c2_size);
+                        if(index == -1){
+                            _ptr1 = nullptr;
+                            _ptr2 = nullptr;
+
+                        }else{
+                            use_container1 = false;
+                            _ptr1 = &container2[index].value;
+                            _ptr2 = &container2[index].key;
+
+                        }
+                    }
+                }
+            }
+        }
+        reference operator*() const {
+            return std::pair<KEY,VALUE&>(*_ptr2,*_ptr1);
+        }
+        pointer operator->() {
+            return std::pair<KEY,VALUE*>(*_ptr2,_ptr1);
+        }
+
+        static int find_first_valid_index(bucket<KEY,VALUE> * conatiner,int size){
+            for(int i =0; i < size; i++){
+                if(conatiner[i].has_item){
+                    return i;
+                }
+            }
+            return -1;
+        }
+        static int find_next_valid_index(bucket<KEY,VALUE> * conatiner,int index,int size){
+            for(int i =index+1; i < size; i++){
+                if(conatiner[i].has_item){
+                    return i;
+                }
+            }
+            return -1;
+        }
+
+        iterator& operator++() {
+            if(_ptr1 == nullptr){
+                return *this;
+            }
+            if(use_container1) {
+                index = find_next_valid_index(first_container, index, container1_size);
+                if(index == -1){
+                    index = find_next_valid_index(second_container, index, container2_size);
+                    use_container1 = false;
+                }
+            }else{
+                index = find_next_valid_index(second_container, index, container2_size);
+            }
+            if(index == -1){
+                _ptr1 = nullptr;
+                return *this;
+            }
+            if(use_container1){
+                _ptr1 = &first_container[index].value;
+                _ptr2 = &first_container[index].key;
+            }else{
+                _ptr1 = &second_container[index].value;
+                _ptr2 = &second_container[index].key;
+            }
+            return *this;
+        }
+
+        // Postfix increment
+        iterator operator++(int) {
+            iterator tmp = *this;
+            ++(*this);
+            return tmp;
+        }
+
+        friend bool operator== (const iterator& a, const iterator& b) { return a._ptr1 == b._ptr1; };
+        friend bool operator!= (const iterator& a, const iterator& b) { return a._ptr1 != b._ptr1; };
+
+
+    private:
+        KEY* _ptr1;
+        VALUE* _ptr2;
+
+        bucket<KEY,VALUE> * first_container;
+        bucket<KEY,VALUE> * second_container;
+        int container1_size;
+        int container2_size;
+        int index;
+        bool use_container1;
+        mutable std::pair<KEY,VALUE>item;
+
+    };
+public:
+    iterator begin(){
+        return iterator(first_container,current_size_first_container,second_container,current_size_second_container);
+    }
+    iterator end(){
+        return iterator(nullptr,-1,nullptr,-1);
+    }
 public:
     table(){
         first_container = nullptr;

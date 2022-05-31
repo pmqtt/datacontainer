@@ -9,6 +9,7 @@
 #include "../src/api/time_measure.h"
 #include <algorithm>
 #include <utility>
+#include "../src/api/macro_helper.h"
 class TestItem{
 	public:
 		TestItem(){}
@@ -372,6 +373,46 @@ BOOST_AUTO_TEST_CASE(SPEED_UP_INSERT_TEST){
 	
 }
 
+BOOST_AUTO_TEST_CASE(TABLE_FOR_EACH_EMPTY_TEST){
+    table<std::string,std::string> t1;
+    int k = 0;
+    for(auto [key, value] : t1) {
+        UNUSED(key);
+        UNUSED(value);
+        k++;
+    }
+    BOOST_CHECK(k == 0);
+
+}
+
+
+BOOST_AUTO_TEST_CASE(TABLE_FOR_EACH_TEST){
+    table<std::string,std::string> t1;
+    t1["A"] = "HALLO";
+    t1["B"] = "WELT";
+    t1["C"] = "C++";
+    int k = 0;
+    for(auto [key, value]   : t1){
+        UNUSED(key);
+        UNUSED(value);
+        k++;
+    }
+    BOOST_CHECK(k == 3);
+}
+
+BOOST_AUTO_TEST_CASE(TABLE_FOR_EACH_OVERWRITE_TEST){
+    table<std::string,std::string> t1;
+    t1["A"] = "HALLO";
+    t1["B"] = "WELT";
+    t1["C"] = "C++";
+    for(auto [key, value]   : t1){
+       value = "WELT";
+    }
+
+    BOOST_CHECK(t1["A"] == "WELT");
+    BOOST_CHECK(t1["B"] == "WELT");
+    BOOST_CHECK(t1["C"] == "WELT");
+}
 
 
 BOOST_AUTO_TEST_SUITE_END()
