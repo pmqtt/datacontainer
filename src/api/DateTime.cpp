@@ -72,6 +72,7 @@ std::string DateTime::toString() const{
 }
 
 void DateTime::visit(FormatTypeMonth * f) {
+    UNUSED(f);
     std::string v = month.toString();
     if(v.length() == 1){
         v = "0"+v;
@@ -81,6 +82,7 @@ void DateTime::visit(FormatTypeMonth * f) {
 }
 
 void DateTime::visit(FormatTypeReadableMonth * f){
+    UNUSED(f);
     static std::map<std::string,std::string> monthConverter = {
             {"01","Jan"},{"02","Feb"},{"03","Mar"},
             {"04","Apr"},{"05","Mai"},{"06","Jun"},
@@ -96,24 +98,28 @@ void DateTime::visit(FormatTypeReadableMonth * f){
 }
 
 void DateTime::visit(FormatTypeYear * f){
+    UNUSED(f);
     formattedDate += year.toString();
 }
 
 void DateTime::visit(FormatTypeDay * f){
+    UNUSED(f);
     formattedDate += day.toString();
 }
 void DateTime::visit(FormatTypeWord * f){
+    UNUSED(f);
     formattedDate += f->toAcceptedWord;
 }
 void DateTime::visit(FormatTypeShortYear * f){
+    UNUSED(f);
     std::string buffer ="";
     buffer += year.toString()[2];
     buffer += year.toString()[3];
-
     formattedDate += buffer;
 }
 
 void DateTime::visit(FormatTypeTime * f){
+    UNUSED(f);
     std::string hh = hour.toString();
     std::string min = minutes.toString();
     std::string sec = seconds.toString();;
@@ -124,6 +130,7 @@ void DateTime::visit(FormatTypeTime * f){
 }
 
 void DateTime::visit(FormatTypeTimeAll * f){
+    UNUSED(f);
     std::string hh = hour.toString();
     std::string min = minutes.toString();
     std::string sec = seconds.toString();;
@@ -135,26 +142,32 @@ void DateTime::visit(FormatTypeTimeAll * f){
 }
 
 void DateTime::visit(FormatTypeTimeHour * f){
+    UNUSED(f);
     std::string hh = hour.toString();
     if(hh.length() ==  1){ hh  = "0" + hh  ; }
     formattedDate += hh;
 }
 void DateTime::visit(FormatTypeTimeSecond * f){
+    UNUSED(f);
     std::string sec = seconds.toString();;
     if(sec.length() == 1){ sec = "0" + sec ; }
     formattedDate += sec;
 }
 void DateTime::visit(FormatTypeTimeMinute * f){
+    UNUSED(f);
     std::string min = minutes.toString();
     if(min.length() == 1){ min = "0" + min ; }
     formattedDate += min;
 }
 void DateTime::visit(FormatTypeTimeMilli * f){
+    UNUSED(f);
     formattedDate += milliseconds.toString();
 }
 void DateTime::visit(FormatTypeTimeMicro * f){
+    UNUSED(f);
     formattedDate += microseconds.toString();
 }
 void DateTime::visit(FormatTypeTimeNano * f){
+    UNUSED(f);
     formattedDate += nanoseconds.toString();
 }

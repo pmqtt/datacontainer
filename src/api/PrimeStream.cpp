@@ -5,7 +5,7 @@ PrimeStream::PrimeStream(int start ) {
 	this->currentValue = start;
 }
 
-PrimeStream::PrimeStream(const PrimeStream & rhs) {
+PrimeStream::PrimeStream(const PrimeStream & rhs) : Stream<int>() {
 	this->currentValue = rhs.currentValue;
 }
 

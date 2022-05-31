@@ -17,7 +17,7 @@ HashStream::HashStream():stream(HashStream::PRIME_ARRAY[29]){
 HashStream::~HashStream(){
 }
 
-HashStream::HashStream(const HashStream & rhs) {
+HashStream::HashStream(const HashStream & rhs) :Stream<int>() {
 	currentIndex = rhs.currentIndex;
 	stream = rhs.stream;
 

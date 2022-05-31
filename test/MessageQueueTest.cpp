@@ -23,12 +23,12 @@ BOOST_AUTO_TEST_SUITE(TEST_MESSAGE_QUEUE)
     BOOST_AUTO_TEST_CASE(TestPushPop){
        MessageQueue<int> queue;
         boost::thread t1([&](){
-            for(std::size_t i = 0; i< 100; ++i) {
+            for(int i = 0; i< 100; ++i) {
                 queue.push(i);
                 boost::this_thread::sleep_for(boost::chrono::microseconds(100));
             }
         });
-        for(std::size_t i = 0; i < 100; ++i){
+        for(int i = 0; i < 100; ++i){
             BOOST_CHECK(i == queue.pop());
         }
 
@@ -38,12 +38,12 @@ BOOST_AUTO_TEST_SUITE(TEST_MESSAGE_QUEUE)
     BOOST_AUTO_TEST_CASE(TestPushPopStdThread){
         MessageQueue<int> queue;
         std::thread t1([&](){
-            for(std::size_t i = 0; i< 100; ++i) {
+            for(int i = 0; i< 100; ++i) {
                 queue.push(i);
                 std::this_thread::sleep_for(std::chrono::microseconds(100));
             }
         });
-        for(std::size_t i = 0; i < 100; ++i){
+        for(int i = 0; i < 100; ++i){
             BOOST_CHECK(i == queue.pop());
         }
 

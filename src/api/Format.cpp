@@ -3,10 +3,11 @@
 //
 #include "Format.h"
 #include <iostream>
+#include <utility>
 
 void Format::parse(){
     std::string wordBuffer="";
-    for(int i = 0; i < format.length(); i++){
+    for(unsigned long i = 0; i < format.length(); i++){
         if(format[i] == '%'){
             if(i+1 < format.length()) {
                 if(!wordBuffer.empty()){
@@ -34,9 +35,9 @@ void Format::parse(){
     }
 }
 bool Format::interpret(const std::string & x){
-    int j = 0;
+    unsigned long j = 0;
     auto formatType = this->formatList[j];
-    for(int i = 0; i < x.length(); i++){
+    for(unsigned long i = 0; i < x.length(); i++){
         if(!formatType->accept(x[i])){
             j = j +1;
             if(j < this->formatList.size()){

@@ -109,6 +109,7 @@ BOOST_AUTO_TEST_SUITE(FormatTestSuite)
         std::vector<std::shared_ptr<FormatType>> list = f.getFormateList();
         std::shared_ptr<FormatType> type = list[0];
         auto word1 = dynamic_cast<FormatTypeWord*>(type.get());
+        BOOST_CHECK_MESSAGE(word1->toAcceptedWord == "t1=", "t1= " + word1->toAcceptedWord);
         type = list[1];
         auto real1 = dynamic_cast<FormatTypeReal*>(type.get());
         type = list[3];

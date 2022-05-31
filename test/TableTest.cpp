@@ -8,6 +8,7 @@
 #include "../src/api/PrimeStream.h"
 #include "../src/api/TimeMeasure.h"
 #include <algorithm>
+#include <utility>
 class TestItem{
 	public:
 		TestItem(){}
@@ -182,10 +183,10 @@ BOOST_AUTO_TEST_CASE(CopyCase){
 BOOST_AUTO_TEST_CASE(MassiveInsertToTableCase){
     std::cout<<"MassiveInsertToTableCase"<<std::endl;
     Table<int,int> table;
-   	for(std::size_t i  = 0; i < 1200000; ++i){
+   	for(int i  = 0; i < 1200000; ++i){
 		table[i]= i;
     	}
-  	for(std::size_t i  = 0; i < 1200000; ++i){
+  	for(int i  = 0; i < 1200000; ++i){
        		BOOST_CHECK(table[i] ==  i);
     	}
     
@@ -243,13 +244,11 @@ BOOST_AUTO_TEST_CASE(REHASH_TEST){
 BOOST_AUTO_TEST_CASE(MassiveLockupTest){
     std::cout<<"MassiveLockupTest"<<std::endl;
     Table<int,int> table;
-	int saveIndex = 0;
-	int secondIndex = 0;
-   	for(std::size_t i  = 0; i < 1200000; ++i){
+	for(int i  = 0; i < 1200000; ++i){
 		table[i] = i;
 		BOOST_CHECK(table.lookup(0));
 	}
-   	for(std::size_t i  = 0; i < 1200000; ++i){
+   	for(int i  = 0; i < 1200000; ++i){
 		BOOST_CHECK(table.lookup(i));
 	}
 	BOOST_CHECK(table.lookup(0));
@@ -259,13 +258,12 @@ BOOST_AUTO_TEST_CASE(MassiveLockupTest){
 BOOST_AUTO_TEST_CASE(MassiveInsertTest){
     std::cout<<"MassiveInsertTest"<<std::endl;
     Table<int,int> table;
-	int saveIndex = 0;
-	int secondIndex = 0;
-   	for(std::size_t i  = 0; i < 1200000; ++i){
-		table.insert(i,i);
+
+   	for(int i  = 0; i < 1200000; ++i){
+        table[i] = i;
 		BOOST_CHECK(table.lookup(0));
 	}
-   	for(std::size_t i  = 0; i < 1200000; ++i){
+   	for(int i  = 0; i < 1200000; ++i){
 		BOOST_CHECK(table.lookup(i));
 	}
 	BOOST_CHECK(table.lookup(0));
@@ -282,7 +280,7 @@ BOOST_AUTO_TEST_CASE(ComplexItemInsertTest){
             std::cout << "Inserted: " << v<<"%"<<std::endl;
         }
     }
-    for(unsigned int i = 0; i <12000; ++i){
+    for( int i = 0; i <12000; ++i){
         BOOST_CHECK(table.lookup(std::to_string(i)));
         BOOST_CHECK(table[std::to_string(i)] == std::string("TEST") + std::to_string(i) );
     }
@@ -292,12 +290,12 @@ BOOST_AUTO_TEST_CASE(ComplexItemInsertTest){
 BOOST_AUTO_TEST_CASE(MoveOperatorTest){
     std::cout<<"MoveOperatorTest"<<std::endl;
     Table<int,int> table;
-	for(std::size_t i  = 0; i < 1200000; ++i){
-		table.insert(i,i);
+	for(int i  = 0; i < 1200000; ++i){
+        table[i] = i;
 		BOOST_CHECK(table.lookup(0));
 	}
 	Table<int,int> movedTable = std::move(table);
-	for(std::size_t i  = 0; i < 1200000; ++i){
+	for(int i  = 0; i < 1200000; ++i){
 		BOOST_CHECK(movedTable.lookup(i));
 	}
 	BOOST_CHECK(movedTable.lookup(0));
@@ -309,7 +307,6 @@ BOOST_AUTO_TEST_CASE(ZERO_FAILURE_TEST){
     std::cout<<"ZERO_FAILURE_TEST"<<std::endl;
     Table<int,int> table;
 	int a = 2022;
-        int b = 2023;	
 	table[0] = 0;
 
 	table[a] = a;
@@ -319,14 +316,14 @@ BOOST_AUTO_TEST_CASE(ZERO_FAILURE_TEST){
 BOOST_AUTO_TEST_CASE(FilterTestCase){
     std::cout<<"FilterTestCase"<<std::endl;
     Table<int,int> table;
-   	for(std::size_t i  = 0; i < 1200000; ++i){
+   	for(int i  = 0; i < 1200000; ++i){
         	table[i]= i;
 		if(table.lookup(0) == false){
 			BOOST_CHECK(false);
 		}
     }
 	std::list<int> filteredList = table.filter( [&](const int & item){ return item <= 100; } );
-	std::size_t i = 0;
+	int i = 0;
 	filteredList.sort();
 	for(auto item : filteredList){
 		BOOST_CHECK(item == i);

@@ -5,6 +5,7 @@
 #ifndef DATACONTAINER_FORMATTYPE_H
 #define DATACONTAINER_FORMATTYPE_H
 
+#include "MacroHelper.h"
 #include "../storage/DataTypes.h"
 #include <map>
 #include <memory>
@@ -13,17 +14,28 @@ struct FormatTypeVisitor;
 
 struct FormatType{
     virtual ~FormatType() = default;
-    virtual bool accept(const char x) {throw std::invalid_argument("Accept not defined");}
+    virtual bool accept(const char x) {
+        UNUSED(x);
+        throw std::invalid_argument("Accept not defined");
+    }
     virtual bool isArgument()const { return true;}
     virtual DataType createDataType(){throw std::invalid_argument("CreateDataType not defined");}
-    virtual std::shared_ptr<FormatType> create(const std::string & value = "") {throw std::invalid_argument("Create not defined");}
-    virtual std::string format(const std::string & value) {throw std::invalid_argument("format not defined");}
-    virtual void hanlde(FormatTypeVisitor * vistor) { }
+    virtual std::shared_ptr<FormatType> create(const std::string & value = "") {
+        UNUSED(value);
+        throw std::invalid_argument("Create not defined");
+    }
+    virtual std::string format(const std::string & value) {
+        UNUSED(value);
+        throw std::invalid_argument("format not defined");
+    }
+    virtual void hanlde(FormatTypeVisitor * visitor) {
+        UNUSED(visitor);
+    }
 };
 
 struct FormatTypeWord : public FormatType{
     std::string toAcceptedWord;
-    int index = 0;
+    unsigned int index = 0;
     FormatTypeWord(const std::string & word) : toAcceptedWord(word){  }
     bool accept(const char x) {
         if(index < toAcceptedWord.length()) {
@@ -38,9 +50,11 @@ struct FormatTypeWord : public FormatType{
         return false;
     }
     std::shared_ptr<FormatType> create(const std::string & value = "")override{
+        UNUSED(value);
         return std::make_shared<FormatTypeWord>(value);
     }
     std::string format(const std::string &value){
+        UNUSED(value);
         return toAcceptedWord;
     }
     void hanlde(FormatTypeVisitor * visitor);
@@ -68,6 +82,7 @@ struct FormatTypeReal: public FormatType{
         return DataType(new RealType(std::atof(argument.c_str())));
     }
     std::shared_ptr<FormatType> create(const std::string & value = "")override{
+        UNUSED(value);
         return std::make_shared<FormatTypeReal>();
     }
 };
@@ -85,6 +100,7 @@ struct FormatTypeString: public FormatType{
         return DataType(new StringType(argument));
     }
     std::shared_ptr<FormatType> create(const std::string & value = "")override{
+        UNUSED(value);
         return std::make_shared<FormatTypeString>();
     }
 };
@@ -92,6 +108,7 @@ struct FormatTypeString: public FormatType{
 template<char X>
 struct FormatDateTimeType :public FormatType{
     std::shared_ptr<FormatType> create(const std::string & value = "")override{
+        UNUSED(value);
         return std::make_shared<FormatDateTimeType<X>>();
     }
 
@@ -115,20 +132,20 @@ using FormatTypeMonth = FormatDateTimeType<'m'>;
 
 struct FormatTypeVisitor{
     virtual ~FormatTypeVisitor() = default;
-    virtual void visit(FormatTypeYear * f){}
-    virtual void visit(FormatTypeReadableMonth * f){}
-    virtual void visit(FormatTypeWord * f){}
-    virtual void visit(FormatTypeShortYear * f){}
-    virtual void visit(FormatTypeDay * f){}
-    virtual void visit(FormatTypeTime * f){}
-    virtual void visit(FormatTypeTimeAll * f){}
-    virtual void visit(FormatTypeTimeHour * f){}
-    virtual void visit(FormatTypeTimeSecond * f){}
-    virtual void visit(FormatTypeTimeMinute * f){}
-    virtual void visit(FormatTypeTimeMilli * f){}
-    virtual void visit(FormatTypeTimeMicro * f){}
-    virtual void visit(FormatTypeTimeNano * f){}
-    virtual void visit(FormatTypeMonth * f) { }
+    virtual void visit(FormatTypeYear * f){UNUSED(f);}
+    virtual void visit(FormatTypeReadableMonth * f){UNUSED(f);}
+    virtual void visit(FormatTypeWord * f){UNUSED(f);}
+    virtual void visit(FormatTypeShortYear * f){UNUSED(f);}
+    virtual void visit(FormatTypeDay * f){UNUSED(f);}
+    virtual void visit(FormatTypeTime * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeAll * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeHour * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeSecond * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeMinute * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeMilli * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeMicro * f){UNUSED(f);}
+    virtual void visit(FormatTypeTimeNano * f){UNUSED(f);}
+    virtual void visit(FormatTypeMonth * f) { UNUSED(f); }
 };
 
 template<char X>

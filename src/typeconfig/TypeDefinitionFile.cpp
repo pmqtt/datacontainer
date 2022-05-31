@@ -1,18 +1,21 @@
 //
 // Created by cefour on 22.04.22.
 //
-#include "ConfigurationFile.h"
-#include "../storage/Property.h"
-#include <iostream>
-#include <assert.h>
-#include <vector>
+
+#include "../api/MacroHelper.h"
 #include "../exceptions/TypedefException.h"
+#include "../storage/Property.h"
+#include "TypeDefintionFile.h"
+
+#include <vector>
+
 
 
 namespace YAML {
     template<>
     struct convert<YamlReadEventNode> {
         static Node encode(const YamlReadEventNode& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -24,7 +27,7 @@ namespace YAML {
             rhs.format = node["format"].as<std::string>();
             std::remove(rhs.format.begin(), rhs.format.end(), '\"');
 
-            for(int i = 0; i < node["insert"].size(); ++i){
+            for(std::size_t i = 0; i < node["insert"].size(); ++i){
                 for(const auto & iter : node["insert"][i]){
                     rhs.insertions[iter.first.as<std::string>()] = iter.second.as<std::string>();
                 }
@@ -39,6 +42,7 @@ namespace YAML {
     template<>
     struct convert<YamlSendEventNode> {
         static Node encode(const YamlSendEventNode& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -65,6 +69,7 @@ namespace YAML {
     template<>
     struct convert<YamlListType>{
         static Node encode(const YamlListType& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -85,6 +90,7 @@ namespace YAML {
     template<>
     struct convert<YamlEnumType>{
         static Node encode(const YamlEnumType& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -102,6 +108,7 @@ namespace YAML {
     template<>
     struct convert<YamlValuesNode>{
         static Node encode(const YamlValuesNode& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -147,6 +154,7 @@ namespace YAML {
     template<>
     struct convert<YamlTypeNode>{
         static Node encode(const YamlTypeNode& rhs) {
+            UNUSED(rhs);
             Node node;
             return node;
         }
@@ -170,7 +178,7 @@ namespace YAML {
 
 
 // Load the yaml configuration file
-std::vector<YamlTypeNode> ConfigurationFile::load(){
+std::vector<YamlTypeNode> TypeDefintionFile::load(){
 
     YAML::Node config = YAML::LoadFile(this->fileName);
     YAML::Node typesNode = config["types"];

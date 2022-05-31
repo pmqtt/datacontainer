@@ -47,10 +47,12 @@ public:
 
     std::map<std::string,std::shared_ptr<FormatType>> getArgumentsMap()const{
         std::map<std::string,std::shared_ptr<FormatType>> arguments;
-        int index = 1;
+        unsigned short index = 1;
         for(auto & iter : formatList){
             if(iter->isArgument()) {
-                arguments["$" + std::to_string(index)] = iter;
+                std::string key ="$";
+                key += std::to_string(index);
+                arguments[key] = iter;
                 index = index +1;
             }
         }

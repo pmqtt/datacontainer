@@ -5,7 +5,7 @@
 #include <string>
 #include <algorithm>
 #include <cstdlib>
-#include "../src/typeconfig/ConfigurationFile.h"
+#include "../src/typeconfig/TypeDefintionFile.h"
 /*
  * types:
   - TEMPERATURE_SENSOR_01
@@ -45,7 +45,7 @@ TEMPERATURE_SENSOR_01:
 BOOST_AUTO_TEST_SUITE(TypeConfigYamlTestSuite)
 
     BOOST_AUTO_TEST_CASE(LoadFileTest){
-       ConfigurationFile file("typeconfigs/test_type_1.yml");
+       TypeDefintionFile file("typeconfigs/test_type_1.yml");
        std::vector<YamlTypeNode> types = file.load();
        BOOST_CHECK_MESSAGE(types.size() == 1, "Count of readed types should 1 and not " + std::to_string(types.size()));
 

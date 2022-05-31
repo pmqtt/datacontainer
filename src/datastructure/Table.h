@@ -16,9 +16,7 @@ struct Bucket {
     KEY key;
     VALUE value;
     bool hasItem;
-    virtual ~Bucket() {
-
-    }
+    virtual ~Bucket()=default;
     Bucket() {
         key = KEY{};
         value = VALUE{};
@@ -31,14 +29,14 @@ struct Bucket {
         hasItem = rhs.hasItem;
     }
 
-    Bucket(Bucket && rhs) {
+    Bucket(Bucket && rhs) noexcept {
         key = std::move(rhs.key);
         value = std::move(rhs.value);
         hasItem = std::move(rhs.hasItem);
     }
 
 
-    Bucket& operator=(Bucket && rhs) {
+    Bucket& operator=(Bucket && rhs) noexcept {
         if (this != &rhs) {
             key = std::move(rhs.key);
             value = std::move(rhs.value);
@@ -55,9 +53,9 @@ struct Bucket {
         }
         return *this;
     }
-    void Append(const KEY & key, const VALUE & value) {
-        this->key = key;
-        this->value = value;
+    void Append(const KEY & k, const VALUE & v) {
+        this->key = k;
+        this->value = v;
         this->hasItem = true;
     }
     void Append(const Bucket & bucket) {
@@ -104,7 +102,7 @@ public:
 
     }
 
-    Table(Table && rhs) {
+    Table(Table && rhs) noexcept{
         firstContainer = nullptr;
         secondContainer = nullptr;
         currentSizeFirstContainer = rhs.currentSizeFirstContainer;
@@ -137,7 +135,7 @@ public:
         }
         return *this;
     }
-    Table & operator=(Table && rhs) {
+    Table & operator=(Table && rhs)  noexcept {
         if (this != &rhs) {
             deallocate();
             currentSizeFirstContainer = rhs.currentSizeFirstContainer;
@@ -216,10 +214,10 @@ public:
     }
 
     void removeAll(){
-        for(std::size_t i =0 ; i < currentSizeFirstContainer; ++i){
+        for(int i =0 ; i < currentSizeFirstContainer; ++i){
             firstContainer[i].hasItem = false;
         }
-        for(std::size_t i =0 ; i < currentSizeSecondContainer; ++i){
+        for(int i =0 ; i < currentSizeSecondContainer; ++i){
             secondContainer[i].hasItem = false;
         }
 
@@ -242,12 +240,12 @@ public:
 
         std::size_t pos = hashForFirstContainer(key);
 
-       if(pos < getSizeOfFirstContainer() && firstContainer[pos].hasItem && firstContainer[pos].key == key) {
+       if(std::cmp_less(pos, getSizeOfFirstContainer()) && firstContainer[pos].hasItem && firstContainer[pos].key == key) {
             return true;
         }
         pos = hashForSecondContainer(key);
 
-        if(pos < getSizeOfSecondContainer() && secondContainer[pos].hasItem && secondContainer[pos].key == key) {
+        if(std::cmp_less(pos, getSizeOfSecondContainer()) && secondContainer[pos].hasItem && secondContainer[pos].key == key) {
             return true;
         }
 
@@ -255,11 +253,11 @@ public:
     }
 
 
-    constexpr int getSizeOfFirstContainer()const {
+    [[nodiscard]] constexpr int getSizeOfFirstContainer()const {
         return currentSizeFirstContainer;
     }
 
-    constexpr int getSizeOfSecondContainer()const {
+    [[nodiscard]] constexpr int getSizeOfSecondContainer()const {
         return currentSizeSecondContainer;
     }
 
@@ -267,7 +265,7 @@ public:
     std::list<KEY> filter(std::function<bool (const VALUE&)> func ){
         std::list<KEY> resultList;
 
-        for(std::size_t i = 0 ; i < currentSizeFirstContainer; ++i){
+        for(int i = 0 ; i < currentSizeFirstContainer; ++i){
             if(firstContainer[i].hasItem){
                 if(func(firstContainer[i].value)){
                     resultList.push_back(firstContainer[i].key);
@@ -276,7 +274,7 @@ public:
 
         }
 
-        for(std::size_t i = 0; i < currentSizeSecondContainer; ++i){
+        for(int i = 0; i < currentSizeSecondContainer; ++i){
             if(secondContainer[i].hasItem){
                 if(func(secondContainer[i].value)){
                     resultList.push_back(secondContainer[i].key);
@@ -288,14 +286,14 @@ public:
 
     std::list<VALUE> convertToList(){
         std::list<VALUE> resultList;
-        for(std::size_t i = 0 ; i < currentSizeFirstContainer; ++i){
+        for(int i = 0 ; i < currentSizeFirstContainer; ++i){
             if(firstContainer[i].hasItem){
                resultList.push_back(firstContainer[i].value);
             }
 
         }
 
-        for(std::size_t i = 0; i < currentSizeSecondContainer; ++i){
+        for(int i = 0; i < currentSizeSecondContainer; ++i){
             if(secondContainer[i].hasItem){
                 resultList.push_back(secondContainer[i].value);
             }
@@ -304,14 +302,14 @@ public:
     }
 
     void updateAllItems(std::function<void (const KEY &key,VALUE&)> func){
-        for(std::size_t i = 0 ; i < currentSizeFirstContainer; ++i){
+        for(int i = 0 ; i < currentSizeFirstContainer; ++i){
             if(firstContainer[i].hasItem){
                 func(firstContainer[i].key,firstContainer[i].value);
             }
 
         }
 
-        for(std::size_t i = 0; i < currentSizeSecondContainer; ++i){
+        for(int i = 0; i < currentSizeSecondContainer; ++i){
             if(secondContainer[i].hasItem){
                 func(secondContainer[i].key,secondContainer[i].value);
             }
@@ -321,14 +319,14 @@ public:
 
 
     void updateAllItems(std::function<void (VALUE&)> func){
-        for(std::size_t i = 0 ; i < currentSizeFirstContainer; ++i){
+        for(int i = 0 ; i < currentSizeFirstContainer; ++i){
             if(firstContainer[i].hasItem){
                 func(firstContainer[i].value);
             }
 
         }
 
-        for(std::size_t i = 0; i < currentSizeSecondContainer; ++i){
+        for(int i = 0; i < currentSizeSecondContainer; ++i){
             if(secondContainer[i].hasItem){
                 func(secondContainer[i].value);
             }

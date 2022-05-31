@@ -5,7 +5,7 @@
 #ifndef DATACONTAINER_DATACONTAINERSERVICE_H
 #define DATACONTAINER_DATACONTAINERSERVICE_H
 
-#include "typeconfig/ConfigurationFile.h"
+#include "typeconfig/TypeDefintionFile.h"
 #include "api/Format.h"
 #include "connector/MqttMessenger.h"
 #include "api/SmartThread.h"

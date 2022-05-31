@@ -22,6 +22,8 @@ file(GLOB ALL_OBJ "src/*.cpp" "src/*.h"
 
 list(REMOVE_ITEM ALL_OBJ ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
+add_compile_options(-Wall -Wextra)
+
 add_library(OBJECT_LIB OBJECT ${ALL_OBJ} )
 
 add_executable(datacontainer src/main.cpp $<TARGET_OBJECTS:OBJECT_LIB>)

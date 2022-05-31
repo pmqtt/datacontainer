@@ -2,12 +2,14 @@
 // Created by cefour on 22.04.22.
 //
 
-#ifndef DATACONTAINER_CONFIGURATIONFILE_H
-#define DATACONTAINER_CONFIGURATIONFILE_H
-#include <string>
-#include "yaml-cpp/yaml.h"
-#include "../storage/DataTypes.h"
+#ifndef DATACONTAINER_TYPEDEFINTIONFILE_H
+#define DATACONTAINER_TYPEDEFINTIONFILE_H
+
 #include "../exceptions/TypedefException.h"
+#include "../storage/DataTypes.h"
+#include "yaml-cpp/yaml.h"
+#include <string>
+
 
 template<class T>
 void loadNodeOptional(const std::string &nodeName, T* value,const YAML::Node & node){
@@ -113,9 +115,9 @@ struct YamlTypeNode{
 
 
 
-class ConfigurationFile{
+class TypeDefintionFile{
 public:
-    ConfigurationFile(const std::string & fileName){
+    TypeDefintionFile(const std::string & fileName){
         this->fileName = fileName;
     }
     std::vector<YamlTypeNode> load();
@@ -124,4 +126,4 @@ private:
     std::string fileName;
 };
 
-#endif //DATACONTAINER_CONFIGURATIONFILE_H
+#endif //DATACONTAINER_TYPEDEFINTIONFILE_H

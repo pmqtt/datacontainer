@@ -46,6 +46,6 @@
         return val[v];\
     }
 
-
+#define UNUSED(x) (void)(x)
 
 #endif //DATACONTAINER_MACROHELPER_H
