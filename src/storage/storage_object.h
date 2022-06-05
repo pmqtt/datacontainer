@@ -96,7 +96,7 @@ using storage_string = storage_type<std::string, charcter_comparable>;
 
 
 using base_storage_object = std::variant<storage_bool, storage_int, storage_real, storage_string>;
-
+using index_value_type = std::variant<storage_int, storage_string>;
 
 
 namespace ptl {
@@ -125,6 +125,17 @@ struct std::hash<base_storage_object> {
     }
 };
 
+template<>
+struct std::hash<index_value_type> {
+    std::size_t operator()(const index_value_type &obj) const noexcept {
+        return std::visit([](const auto &o) {
+            return o.hash();
+        }, obj);
+    }
+};
+
+
 bool operator==(const base_storage_object &a, const base_storage_object &b);
+index_value_type assign_to_index_value(const base_storage_object & rhs);
 
 #endif //DATACONTAINER_STORAGE_OBJECT_H

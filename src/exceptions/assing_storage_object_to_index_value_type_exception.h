@@ -1,0 +1,10 @@
+#ifndef DATACONTAINER_ASSING_STORAGE_OBJECT_TO_INDEX_VALUE_TYPE_EXCEPTION_H
+#define DATACONTAINER_ASSING_STORAGE_OBJECT_TO_INDEX_VALUE_TYPE_EXCEPTION_H
+
+
+#include "../api/exception_macro.h"
+
+CREATE_EXCEPTION_CLASS(assing_storage_object_to_index_value_type_exception)
+
+
+#endif

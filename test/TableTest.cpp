@@ -277,7 +277,8 @@ BOOST_AUTO_TEST_CASE(ComplexItemInsertTest){
     std::cout<<"ComplexItemInsertTest"<<std::endl;
     table<std::string,std::string> t1;
     for(unsigned int i = 0; i <12000; ++i){
-        t1.insert(std::to_string(i), std::move(std::string("TEST") + std::to_string(i) ));
+        std::string test ="TEST" + std::to_string(i) ;
+        t1.insert(std::to_string(i), std::move( test ));
         int v = static_cast<int>((static_cast<double>(i)/12000) *100);
         if(  v % 5 == 0) {
             std::cout << "Inserted: " << v<<"%"<<std::endl;

@@ -18,7 +18,8 @@ void format::parse(){
                     this->format_list.push_back(format_specifier_list[format_def[i + 1]]->create());
                     i++;
                 }else{
-                    word_buffer += "%" + format_def[i + 1];
+                    word_buffer += "%";
+                    word_buffer += format_def[i + 1];
                     i++;
                 }
 

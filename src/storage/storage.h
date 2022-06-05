@@ -99,7 +99,7 @@ private:
 
 namespace chakra{
     using list_container = std::list<base_storage_object>;
-    using key_value_container = ptl::table<base_storage_object,std::vector<base_storage_object>>;
+    using key_value_container = ptl::table<index_value_type,std::vector<base_storage_object>>;
     using time_series_container = ptl::time_tree<std::vector<base_storage_object >>;
     using table_container = std::vector<std::vector<base_storage_object >>;
 
@@ -116,9 +116,6 @@ namespace chakra{
 
     using header_desc = ptl::table<std::string,std::pair<std::size_t,base_storage_object>>;
     header_desc make_header(const std::vector<std::pair<std::string,base_storage_object>> & header);
-
-
-
 
 
     struct storage_table{
@@ -159,7 +156,8 @@ namespace chakra{
         void insert(const std::vector<std::pair<std::string, base_storage_object>> & entry){
             if (std::holds_alternative<key_value_container>(*tbl)) {
                 key_value_container & ctbl = std::get<key_value_container>(*tbl);
-                auto key = entry[0].second;
+
+                index_value_type key = assign_to_index_value(entry[0].second);
                 if(ctbl[key].empty()){
                     std::vector<base_storage_object> content;
                     content.resize(header_size);
@@ -173,7 +171,7 @@ namespace chakra{
             }
         }
 
-        std::vector<base_storage_object> find(const base_storage_object & key){
+        std::vector<base_storage_object> find(const index_value_type & key){
             if (std::holds_alternative<key_value_container>(*tbl)) {
                 return std::get<key_value_container>(*tbl)[key];
             } else {
