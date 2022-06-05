@@ -1,9 +1,9 @@
 #ifndef PRIME_STREAM_H
 #define PRIME_STREAM_H
-#include "stream.h"
+#include "base_stream.h"
 #include <cmath>
 
-class prime_stream : public stream<int> {
+class prime_stream : public base_stream<int> {
 public:
     prime_stream(int start = 7);
     prime_stream(const prime_stream & rhs);

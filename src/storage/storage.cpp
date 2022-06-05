@@ -32,6 +32,42 @@ void storage_node::insert_row(const std::vector<std::pair<std::string,data_type>
 
 }
 
+
+chakra::base_catalog_item chakra::make_catalog_item(chakra::CATALOG_ITEM_TYPE item){
+    switch(item){
+        case CATALOG_ITEM_TYPE::CATALOG_LIST: {
+            base_catalog_item i = chakra::list_container{};
+            return i;
+        }
+        case CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE: {
+            base_catalog_item i = chakra::key_value_container{};
+            return i;
+        }
+        case CATALOG_ITEM_TYPE::CATALOG_TIME_SERIE: {
+            base_catalog_item i = chakra::time_series_container{};
+            return i;
+        }
+        case CATALOG_ITEM_TYPE::CATALOG_TABLE: {
+            base_catalog_item i = chakra::table_container{};
+            return i;
+        }
+        default:
+            break;
+    }
+    base_catalog_item i = chakra::key_value_container{};
+    return i;
+}
+
+
+chakra::header_desc chakra::make_header(const std::vector<std::pair<std::string,base_storage_object>> & header){
+    chakra::header_desc description;
+    for(std::size_t i =0; i < header.size(); ++i){
+        description[header[i].first] = std::pair<std::size_t,base_storage_object>(i,header[i].second);
+    }
+    return description;
+}
+
+
 #if 0
 
 void createD01Table(){

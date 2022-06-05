@@ -18,7 +18,7 @@
 #include <utility>
 
 using namespace std;
-
+using namespace ptl;
 
 BOOST_AUTO_TEST_SUITE(TreeTimeSuite)
 

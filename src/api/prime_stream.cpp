@@ -5,7 +5,7 @@ prime_stream::prime_stream(int start ) {
 	this->current_value = start;
 }
 
-prime_stream::prime_stream(const prime_stream & rhs) : stream<int>() {
+prime_stream::prime_stream(const prime_stream & rhs) : base_stream<int>() {
 	this->current_value = rhs.current_value;
 }
 

@@ -13,13 +13,20 @@
 #include <iomanip> // put_time
 #include <thread>
 #include <algorithm>
-#include <source_location>
+
+#if defined(__clang__)
+    #include <experimental/source_location>
+    using src_loc = std::experimental::source_location;
+#else
+    #include <source_location>
+    using src_loc = std::source_location;
+#endif
+
 #include <cstdlib>
 #include <sstream>
 #include <utility>
 #include "date_time.h"
 #include "macro_helper.h"
-
 
 
 namespace logger {
@@ -40,7 +47,7 @@ namespace logger {
         void set_log_level(LEVEL l){
             max_level = l;
         }
-        void log(LEVEL l, std::string &&msg, const std::source_location &location = std::source_location::current()) {
+        void log(LEVEL l, std::string &&msg, const src_loc &location = src_loc::current()) {
             if(l >= max_level) {
                 if(l >= max_level) {
                     color_shell(l);
@@ -49,7 +56,7 @@ namespace logger {
             }
         }
 
-        void log(LEVEL l, const std::string &msg, const std::source_location &location = std::source_location::current()) {
+        void log(LEVEL l, const std::string &msg, const src_loc &location = src_loc::current()) {
             if(l >= max_level) {
                 color_shell(l);
                 std::cout << create_output_stream(l, msg, location).str();
@@ -57,7 +64,7 @@ namespace logger {
         }
 
     private:
-        std::stringstream  create_output_stream(LEVEL l, const std::string & msg, const std::source_location &location){
+        std::stringstream  create_output_stream(LEVEL l, const std::string & msg, const src_loc &location){
             date_time date = date_time::timestamp();
             date.set_format(configuration::timestamp_format);
             std::stringstream stream;

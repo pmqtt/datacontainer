@@ -2,7 +2,7 @@
 #define HASH_STREAM_H
 
 #include "prime_stream.h"
-class hash_stream : public stream<int>
+class hash_stream : public base_stream<int>
 {
 public:
     hash_stream();
@@ -11,7 +11,7 @@ public:
     hash_stream & operator=(const hash_stream & rhs);
     hash_stream(hash_stream && rhs);
     hash_stream & operator=(hash_stream && rhs);
-    // Geerbt �ber stream
+    // Geerbt �ber base_stream
     virtual int next();
 #if defined(_MSC_VER)
     static constexpr int PRIME_ARRAY[] = {

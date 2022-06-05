@@ -42,7 +42,7 @@ struct yaml_string_type;
 struct yaml_list_type;
 struct yaml_enum_type;
 struct yaml_index_type;
-struct field_property;
+class field_property;
 
 
 struct yaml_value_type_base{

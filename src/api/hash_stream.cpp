@@ -17,7 +17,7 @@ hash_stream::hash_stream(): stream(hash_stream::PRIME_ARRAY[29]){
 hash_stream::~hash_stream(){
 }
 
-hash_stream::hash_stream(const hash_stream & rhs) : stream<int>() {
+hash_stream::hash_stream(const hash_stream & rhs) : base_stream<int>{} {
     current_index = rhs.current_index;
 	stream = rhs.stream;
 

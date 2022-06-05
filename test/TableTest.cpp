@@ -10,6 +10,8 @@
 #include <algorithm>
 #include <utility>
 #include "../src/api/macro_helper.h"
+
+using namespace ptl;
 class TestItem{
 	public:
 		TestItem(){}
@@ -413,6 +415,17 @@ BOOST_AUTO_TEST_CASE(TABLE_FOR_EACH_OVERWRITE_TEST){
     BOOST_CHECK(t1["B"] == "WELT");
     BOOST_CHECK(t1["C"] == "WELT");
 }
+
+    BOOST_AUTO_TEST_CASE(TABLE_FOR_EACH_COMPLEX_TYPE_VALUE_TEST){
+        table<std::string,std::vector<std::string>> t1;
+        t1["A"].push_back( "HALLO" );
+        auto x = t1.begin();
+        UNUSED(x);
+        //for(auto [key, value]   : t1) {
+        //}
+
+
+    }
 
 
 BOOST_AUTO_TEST_SUITE_END()

@@ -1,10 +1,20 @@
 cmake_minimum_required(VERSION 3.16)
 project(datacontainer)
 
+option(BUILD_WITH_CLANG OFF)
+
+if( ${BUILD_WITH_CLANG} )
+        MESSAGE("-- Using compiler clang++")
+        SET (CMAKE_CXX_COMPILER             "/usr/bin/clang++")
+else()
+        MESSAGE("-- Using compiler gcc")
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 
+
 find_package(Boost REQUIRED COMPONENTS system program_options log thread date_time chrono unit_test_framework log_setup python)
-find_package( yaml-cpp REQUIRED )
+find_package(yaml-cpp REQUIRED )
 find_package(cpprestsdk REQUIRED)
 find_package(Python3 COMPONENTS Interpreter Development)
 
@@ -46,7 +56,6 @@ foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
         #Add compile target
         add_executable(${testName} ${testSrc} $<TARGET_OBJECTS:OBJECT_LIB>)
-        message(${Boost_LIBRARIES})
         target_link_libraries(${testName}  ${Boost_LIBRARIES} pthread ${YAML_CPP_LIBRARIES} cpprestsdk::cpprest  paho-mqttpp3 paho-mqtt3c paho-mqtt3cs paho-mqtt3a paho-mqtt3as Python3::Python  boost_python${BOOST_PYTHON_VERSION})
         #I like to move testing binaries into a testBin directory
         set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test/bin)

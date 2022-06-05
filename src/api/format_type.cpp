@@ -3,6 +3,6 @@
 //
 #include "format_type.h"
 
-void format_type_word::hanlde(format_type_visitor * visitor){
+void format_type_word::handle(format_type_visitor * visitor){
     visitor->visit(this);
 }

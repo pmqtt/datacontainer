@@ -18,7 +18,7 @@ struct format_type{
         UNUSED(x);
         throw std::invalid_argument("Accept not defined");
     }
-    virtual bool is_argument()const { return true;}
+    [[nodiscard]] virtual bool is_argument()const { return true;}
     virtual data_type create_data_type(){throw std::invalid_argument("CreateDataType not defined");}
     virtual std::shared_ptr<format_type> create(const std::string & value = "") {
         UNUSED(value);
@@ -28,7 +28,7 @@ struct format_type{
         UNUSED(value);
         throw std::invalid_argument("format_def not defined");
     }
-    virtual void hanlde(format_type_visitor * visitor) {
+    virtual void handle(format_type_visitor * visitor) {
         UNUSED(visitor);
     }
 };
@@ -36,8 +36,8 @@ struct format_type{
 struct format_type_word : public format_type{
     std::string toAcceptedWord;
     unsigned int index = 0;
-    format_type_word(const std::string & word) : toAcceptedWord(word){  }
-    bool accept(const char x) {
+    explicit format_type_word(const std::string & word) : toAcceptedWord(word){  }
+    bool accept(const char x) override {
         if(index < toAcceptedWord.length()) {
             if (toAcceptedWord[index] == x) {
                 index++;
@@ -46,25 +46,25 @@ struct format_type_word : public format_type{
         }
         return false;
     }
-    bool is_argument() const{
+    [[nodiscard]] bool is_argument()const override {
         return false;
     }
     std::shared_ptr<format_type> create(const std::string & value = "")override{
         UNUSED(value);
         return std::make_shared<format_type_word>(value);
     }
-    std::string format(const std::string &value){
+    std::string format(const std::string &value) override{
         UNUSED(value);
         return toAcceptedWord;
     }
-    void hanlde(format_type_visitor * visitor);
+    void handle(format_type_visitor * visitor) override;
 
 
 };
 
 struct format_type_real: public format_type{
     std::string argument;
-    bool accept(const char x) {
+    bool accept(const char x) override {
         if(x == '.'){
             argument += x;
             return true;
@@ -75,11 +75,11 @@ struct format_type_real: public format_type{
         }
         return false;
     }
-    bool is_argument() const{
+    [[nodiscard]] bool is_argument() const override{
         return true;
     }
-    data_type create_data_type(){
-        return data_type(new real_type(std::atof(argument.c_str())));
+    data_type create_data_type() override{
+        return {new real_type(std::atof(argument.c_str()))};
     }
     std::shared_ptr<format_type> create(const std::string & value = "")override{
         UNUSED(value);
@@ -89,15 +89,15 @@ struct format_type_real: public format_type{
 
 struct format_type_string: public format_type{
     std::string argument;
-    bool accept(const char x) {
+    bool accept(const char x) override {
         argument += x;
         return true;
     }
-    bool is_argument() const{
+    [[nodiscard]] bool is_argument() const override{
         return true;
     }
-    data_type create_data_type(){
-        return data_type(new string_type(argument));
+    data_type create_data_type() override{
+        return {new string_type(argument)};
     }
     std::shared_ptr<format_type> create(const std::string & value = "")override{
         UNUSED(value);
@@ -112,7 +112,7 @@ struct format_date_time_type : public format_type{
         return std::make_shared<format_date_time_type<X>>();
     }
 
-    void hanlde(format_type_visitor * visitor) override;
+    void handle(format_type_visitor * visitor) override;
 };
 
 
@@ -149,7 +149,7 @@ struct format_type_visitor{
 };
 
 template<char X>
-void format_date_time_type<X>::hanlde(format_type_visitor* v){
+void format_date_time_type<X>::handle(format_type_visitor* v){
     v->visit(this);
 }
 

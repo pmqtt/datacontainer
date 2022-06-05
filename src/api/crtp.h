@@ -9,6 +9,15 @@
 #include <exception>
 #include "macro_helper.h"
 
+template<typename ... Ts>
+struct Overload : Ts ... {
+    using Ts::operator() ...;
+};
+template<class... Ts> Overload(Ts...) -> Overload<Ts...>;
+
+
+
+
 template<class X, class Y>
 struct is_convertable {
     static constexpr bool value = std::is_same<X, Y>::value;
@@ -27,6 +36,9 @@ struct is_convertable {
     template<> struct is_convertable<X,Y> { static constexpr bool value = true; }; \
     template<> struct is_convertable<Y,X> { static constexpr bool value = true;};
 
+
+template<typename T,typename X>
+concept Is_Convertable = is_convertable<typename T::PARAMETER,typename X::PARAMETER>::value;
 
 template<typename T, template<typename> class crtpType>
 struct crtp {
@@ -53,19 +65,17 @@ template<class T>
 struct addable : crtp<T, addable> {
     addable() = default;
 
-    addable(const T &x) {
+    explicit addable(const T &x) {
         this->underlying().get() = x.underlying().get();
     }
 
-    template<class Y>
-    requires(is_convertable<typename T::PARAMETER, typename Y::PARAMETER>::value)
+    template<Is_Convertable<T> Y>
     T operator+(const Y &other) const {
         return T(this->underlying().get() + other.get());
     }
 
-    template<class Y> requires(is_convertable<typename T::PARAMETER, typename Y::PARAMETER>::value)
-    T & operator+=(const Y &other
-    ){
+    template<Is_Convertable<T> Y>
+    T & operator+=(const Y &other){
         this->underlying().get() += other.get();
         return this->underlying();
     }
@@ -75,11 +85,11 @@ template<class T>
 struct stringable : crtp<T, stringable> {
     stringable() = default;
 
-    stringable(const T &x) {
+    explicit stringable(const T &x) {
         this->underlying().get() = x.underlying().get();
     }
 
-    std::string to_string() const {
+    [[nodiscard]] std::string to_string() const {
         return std::to_string(this->underlying().get());
     }
 };

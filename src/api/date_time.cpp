@@ -16,7 +16,6 @@ date_time date_time::timestamp() {
     auto now = std::chrono::system_clock::now();
     auto in_time_t = std::chrono::system_clock::to_time_t(now);
     tm local_tm = *localtime(&in_time_t);
-
     auto ms = duration_cast<std::chrono::milliseconds>(now.time_since_epoch())    % 1000;
     auto mikro = duration_cast<std::chrono::milliseconds>(now.time_since_epoch()) % 1000000;
     auto ns = duration_cast<std::chrono::milliseconds>(now.time_since_epoch())    % 1000000000;
@@ -64,7 +63,7 @@ std::string date_time::to_string() const{
 
     auto format_list = this->fmt.get_formate_list();
     for(auto & x : format_list){
-        x->hanlde(const_cast<date_time*>(this));
+        x->handle(const_cast<date_time *>(this));
     }
     std::string buffer = formatted_date;
     formatted_date = "";
