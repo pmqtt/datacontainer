@@ -42,6 +42,7 @@ namespace logger {
     class logger {
     public:
         logger(){
+            UNUSED(hasher);
             max_level = configuration::log_level;
         }
         void set_log_level(LEVEL l){

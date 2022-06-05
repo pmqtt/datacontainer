@@ -55,43 +55,43 @@ struct yaml_value_type_base{
 };
 
 struct yaml_int_type : public yaml_value_type_base{
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind()override;
 
     base_storage_object get_storage_value_type() override;
 
 };
 struct yaml_real_type : public yaml_value_type_base{
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind()override;
 
     base_storage_object get_storage_value_type() override;
 };
 struct yaml_string_type : public yaml_value_type_base{
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind()override;
 
     base_storage_object get_storage_value_type() override;
 };
 struct yaml_list_type : public yaml_value_type_base{
     std::string delimiter;
     YAML_VALUE_TYPE type;
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind()override;
 
     base_storage_object get_storage_value_type() override;
 };
 struct yaml_enum_type : public yaml_value_type_base{
     std::vector<std::string> enum_items;
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind()override;
 
     base_storage_object get_storage_value_type() override;
 };
 
 struct yaml_index_type : public yaml_value_type_base{
-    std::shared_ptr<field_property> create_property();
-    TYPE_KIND get_type_kind();
+    std::shared_ptr<field_property> create_property()override;
+    TYPE_KIND get_type_kind() override;
 
     base_storage_object get_storage_value_type() override;
 };
