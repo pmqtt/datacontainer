@@ -18,12 +18,12 @@
 class data_container_service{
 private:
     std::vector<yaml_type_node> config;
-    storage db_container;
+    chakra::storage_manager & db_manager;
     std::map<std::string,std::shared_ptr<mqtt_messenger<2>>> messengers;
 public:
-    data_container_service(const std::vector<yaml_type_node> & cfg, const storage & store_container) : config(cfg), db_container(store_container){ }
+    data_container_service(const std::vector<yaml_type_node> & cfg,  chakra::storage_manager & mgr) : config(cfg), db_manager(mgr){ }
     void run();
-    std::vector<std::pair<std::string,data_type>> createRow(std::map<std::string,std::shared_ptr<format_type>> formatMap);
+    std::vector<std::pair<std::string,base_storage_object>> createRow(std::map<std::string,std::shared_ptr<format_type>> format_map);
 
 };
 

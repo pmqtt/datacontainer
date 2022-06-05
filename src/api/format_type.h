@@ -6,6 +6,7 @@
 #define DATACONTAINER_FORMAT_TYPE_H
 
 #include "../storage/data_types.h"
+#include "../storage/storage_object.h"
 #include "macro_helper.h"
 #include <map>
 #include <memory>
@@ -18,8 +19,13 @@ struct format_type{
         UNUSED(x);
         throw std::invalid_argument("Accept not defined");
     }
-    [[nodiscard]] virtual bool is_argument()const { return true;}
+    [[nodiscard]]virtual bool is_argument()const { return true;}
     virtual data_type create_data_type(){throw std::invalid_argument("CreateDataType not defined");}
+
+    virtual base_storage_object create_base_storage_object(){
+        throw std::invalid_argument("CreateDataType not defined");
+    }
+
     virtual std::shared_ptr<format_type> create(const std::string & value = "") {
         UNUSED(value);
         throw std::invalid_argument("Create not defined");
@@ -85,6 +91,10 @@ struct format_type_real: public format_type{
         UNUSED(value);
         return std::make_shared<format_type_real>();
     }
+
+    base_storage_object create_base_storage_object() override {
+        return storage_real(std::atof(argument.c_str()));
+    }
 };
 
 struct format_type_string: public format_type{
@@ -102,6 +112,9 @@ struct format_type_string: public format_type{
     std::shared_ptr<format_type> create(const std::string & value = "")override{
         UNUSED(value);
         return std::make_shared<format_type_string>();
+    }
+    base_storage_object create_base_storage_object() override {
+        return storage_string(argument);
     }
 };
 

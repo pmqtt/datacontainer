@@ -33,6 +33,25 @@ public:
     ~message_queue(){
     }
 
+    message_queue(message_queue && rhs){
+        queue = std::move(rhs.queue);
+
+    }
+    message_queue(const message_queue & rhs){
+
+        queue = rhs.queue;
+    }
+
+
+    message_queue &operator=(message_queue && rhs){
+        queue = std::move(rhs.queue);
+        return *this;
+    }
+    message_queue &operator=(const message_queue & rhs){
+        queue = rhs.queue;
+        return *this;
+    }
+
     T pop(){
         try {
             ulock mlock(mutex);

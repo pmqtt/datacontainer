@@ -68,7 +68,6 @@ public:
         for(auto & iter : allItems){
             func(iter[pos]);
         }
-
     }
 
 private:
@@ -103,6 +102,10 @@ namespace chakra{
     using key_value_container = ptl::table<index_value_type,std::vector<base_storage_object>>;
     using time_series_container = ptl::time_tree<std::vector<base_storage_object >>;
     using table_container = std::vector<std::vector<base_storage_object >>;
+    using header_item = std::pair<std::string,base_storage_object>;
+    using header_desc = ptl::table<std::string,std::pair<std::size_t,base_storage_object>>;
+    header_desc make_header(const std::vector<header_item> & header);
+
 
     using base_catalog_item = std::variant<list_container,key_value_container,time_series_container,table_container>;
 
@@ -115,9 +118,7 @@ namespace chakra{
     base_catalog_item make_catalog_item(CATALOG_ITEM_TYPE item);
 
 
-    using header_item = std::pair<std::string,base_storage_object>;
-    using header_desc = ptl::table<std::string,std::pair<std::size_t,base_storage_object>>;
-    header_desc make_header(const std::vector<header_item> & header);
+
 
 
     struct storage_table{
@@ -125,90 +126,49 @@ namespace chakra{
         base_catalog_item *tbl;
         header_desc header_description;
         std::size_t header_size;
+        int index;
+        message_queue<std::string> queue;
 
     public:
-        void create_header(const header_desc & desc){
-            header_description = desc;
-            header_size = 0;
-            for( auto [x,y] : header_description){
-                UNUSED(x);
-                UNUSED(y);
-                header_size++;
-            }
-        }
+        void create_header(const header_desc & desc);
+
     private:
-        std::size_t find_column_index(const std::string& name){
-            if(header_description.lookup(name)){
-                return header_description[name].first;
-            }
-            throw std::out_of_range("Column name " + name + " not found in header description" );
-        }
+        std::size_t find_column_index(const std::string& name);
     public:
-        storage_table( base_catalog_item * item) : tbl(item){ }
+        storage_table() = default;
+        storage_table( base_catalog_item * item);
+        storage_table( storage_table && rhs);
+        storage_table( const storage_table & rhs);
+        storage_table & operator=( storage_table && rhs);
+        storage_table & operator=( const storage_table & rhs);
+
         //list case
-        void insert(const base_storage_object & obj) {
-            if (std::holds_alternative<list_container>(*tbl)) {
-                list_container &l = std::get<list_container>(*tbl);
-                l.emplace_back(obj);
-            } else {
-                throw std::runtime_error("method call is not allowed, beacause table is not a list");
-            }
-        }
+        void insert(const base_storage_object & obj);
 
-        void insert(const std::vector<std::pair<std::string, base_storage_object>> & entry){
-            if (std::holds_alternative<key_value_container>(*tbl)) {
-                key_value_container & ctbl = std::get<key_value_container>(*tbl);
+        void insert(const std::vector<std::pair<std::string, base_storage_object>> & entry);
 
-                index_value_type key = assign_to_index_value(entry[0].second);
-                if(ctbl[key].empty()){
-                    std::vector<base_storage_object> content;
-                    content.resize(header_size);
-                    for(const auto & x: entry){
-                        content[header_description[x.first].first] =  x.second;
-                    }
-                    std::get<key_value_container>(*tbl)[key] = content;
-                }
-            } else {
-                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
-            }
-        }
+        std::vector<base_storage_object> find(const index_value_type & key);
 
-        std::vector<base_storage_object> find(const index_value_type & key){
-            if (std::holds_alternative<key_value_container>(*tbl)) {
-                return std::get<key_value_container>(*tbl)[key];
-            } else {
-                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
-            }
-        }
+        std::vector<base_storage_object> find(const std::chrono::milliseconds & key);
+        std::string create_index(int value);
 
-        std::vector<base_storage_object> find(const std::chrono::milliseconds & key){
-            if (std::holds_alternative<time_series_container>(*tbl)) {
-                return std::get<time_series_container>(*tbl).find_exact(key).value;
-            } else {
-                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
-            }
-        }
+        void aggregate_table(const std::string & column_name, const std::function<void(base_storage_object & item)> & func);
 
+        base_catalog_item *get_inner_table()const;
+        std::string get_event();
 
-        base_catalog_item *get_inner_table()const{
-            return tbl;
-        }
+        void print();
 
     };
 
     class storage_manager{
     public:
         storage_manager() = default;
-        void add_catalog_entry(const std::string &entry_name,CATALOG_ITEM_TYPE item){
-            tbl_catalog[entry_name] = make_catalog_item(item);
-        }
-
-        storage_table  get_table(const std::string & name){
-            storage_table tbl(&tbl_catalog[name]);
-            return tbl;
-        }
+        void add_catalog_entry(const std::string &entry_name,CATALOG_ITEM_TYPE item);
+        storage_table  & get_table(const std::string & name);
     private:
         std::map<std::string,base_catalog_item> tbl_catalog;
+        std::map<std::string,storage_table> storage_heap;
     };
 }
 
