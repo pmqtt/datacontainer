@@ -7,6 +7,7 @@
 
 #include "../exceptions/typedef_exception.h"
 #include "../storage/data_types.h"
+#include "../storage/storage_object.h"
 #include "yaml-cpp/yaml.h"
 #include <string>
 
@@ -50,36 +51,49 @@ struct yaml_value_type_base{
     virtual ~yaml_value_type_base() = default;
     virtual std::shared_ptr<field_property> create_property()= 0;
     virtual TYPE_KIND get_type_kind() = 0;
+    virtual base_storage_object get_storage_value_type() = 0;
 };
 
 struct yaml_int_type : public yaml_value_type_base{
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
 
+    base_storage_object get_storage_value_type() override;
+
 };
 struct yaml_real_type : public yaml_value_type_base{
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
+
+    base_storage_object get_storage_value_type() override;
 };
 struct yaml_string_type : public yaml_value_type_base{
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
+
+    base_storage_object get_storage_value_type() override;
 };
 struct yaml_list_type : public yaml_value_type_base{
     std::string delimiter;
     YAML_VALUE_TYPE type;
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
+
+    base_storage_object get_storage_value_type() override;
 };
 struct yaml_enum_type : public yaml_value_type_base{
     std::vector<std::string> enum_items;
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
+
+    base_storage_object get_storage_value_type() override;
 };
 
 struct yaml_index_type : public yaml_value_type_base{
     std::shared_ptr<field_property> create_property();
     TYPE_KIND get_type_kind();
+
+    base_storage_object get_storage_value_type() override;
 };
 
 struct yaml_read_event_node{
@@ -111,6 +125,7 @@ struct yaml_type_node{
     std::vector<yaml_values_node> values;
     yaml_read_event_node read_event;
     yaml_send_event_node send_event;
+
 };
 
 

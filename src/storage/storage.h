@@ -8,6 +8,7 @@
 #include "../api/message_queue.h"
 #include "../datastructure/table.h"
 #include "../datastructure/time_tree.h"
+#include "../exceptions/not_allowed_method_call_excaption.h"
 #include "data_types.h"
 #include "property.h"
 #include "storage_object.h"
@@ -114,8 +115,9 @@ namespace chakra{
     base_catalog_item make_catalog_item(CATALOG_ITEM_TYPE item);
 
 
+    using header_item = std::pair<std::string,base_storage_object>;
     using header_desc = ptl::table<std::string,std::pair<std::size_t,base_storage_object>>;
-    header_desc make_header(const std::vector<std::pair<std::string,base_storage_object>> & header);
+    header_desc make_header(const std::vector<header_item> & header);
 
 
     struct storage_table{
@@ -167,7 +169,7 @@ namespace chakra{
                     std::get<key_value_container>(*tbl)[key] = content;
                 }
             } else {
-                throw std::runtime_error("method call is not allowed, beacause table is not a chakra table");
+                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
             }
         }
 
@@ -175,7 +177,7 @@ namespace chakra{
             if (std::holds_alternative<key_value_container>(*tbl)) {
                 return std::get<key_value_container>(*tbl)[key];
             } else {
-                throw std::runtime_error("method call is not allowed, beacause table is not a chakra table");
+                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
             }
         }
 
@@ -183,10 +185,9 @@ namespace chakra{
             if (std::holds_alternative<time_series_container>(*tbl)) {
                 return std::get<time_series_container>(*tbl).find_exact(key).value;
             } else {
-                throw std::runtime_error("method call is not allowed, beacause table is not a chakra table");
+                throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
             }
         }
-
 
 
         base_catalog_item *get_inner_table()const{

@@ -218,19 +218,47 @@ std::shared_ptr<field_property> yaml_index_type::create_property() {
 TYPE_KIND yaml_int_type::get_type_kind() {
     return TYPE_KIND::INT;
 }
+
+base_storage_object yaml_int_type::get_storage_value_type() {
+    return storage_int();
+}
+
 TYPE_KIND yaml_real_type::get_type_kind() {
     return TYPE_KIND::REAL;
 }
+
+base_storage_object yaml_real_type::get_storage_value_type() {
+    return storage_real();
+}
+
 TYPE_KIND yaml_string_type::get_type_kind() {
     return TYPE_KIND::STRING;
 }
+
+base_storage_object yaml_string_type::get_storage_value_type() {
+    return storage_string();
+}
+
 TYPE_KIND yaml_list_type::get_type_kind() {
     return TYPE_KIND::STRING;
 }
+
+base_storage_object yaml_list_type::get_storage_value_type() {
+    return storage_string();
+}
+
 TYPE_KIND yaml_enum_type::get_type_kind() {
     return TYPE_KIND::STRING;
 }
 
+base_storage_object yaml_enum_type::get_storage_value_type() {
+    return storage_string();
+}
+
 TYPE_KIND yaml_index_type::get_type_kind() {
     return TYPE_KIND::STRING;
+}
+
+base_storage_object yaml_index_type::get_storage_value_type() {
+    return storage_string();
 }
