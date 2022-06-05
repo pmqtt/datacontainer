@@ -5,11 +5,13 @@
 #ifndef DATACONTAINER_STORAGE_OBJECT_H
 #define DATACONTAINER_STORAGE_OBJECT_H
 
+
 #include <any>
 #include <exception>
 #include <stdexcept>
 #include <type_traits>
 #include <variant>
+
 
 struct bool_comparable{
 };
@@ -18,6 +20,9 @@ struct numeric_comparable {
 struct charcter_comparable {
 };
 struct item_comparable {
+};
+struct date_time_comparable{
+
 };
 
 

@@ -5,7 +5,6 @@
 #ifndef DATACONTAINER_FORMAT_H
 #define DATACONTAINER_FORMAT_H
 #include "format_type.h"
-#include "../storage/data_types.h"
 
 #include <string>
 #include <vector>
