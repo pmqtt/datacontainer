@@ -183,11 +183,16 @@ std::string chakra::storage_table::get_event() {
 
 void chakra::storage_table::print() {
     auto key_value_store = std::get<key_value_container>(*tbl);
+    for(auto [key,value] : header_description){
+        std::cout << key << " | ";
+    }
+    std::cout<<"=================================================================================="<<std::endl;
+
     for (auto [key, value]: key_value_store) {
-        std::visit([](auto &k) { std::cout << k.get_value() << std::endl; }, key);
         for (auto &item: value) {
-            std::visit([](auto &i) { std::cout << i.get_value() << std::endl; }, item);
+            std::visit([](auto &i) { std::cout << i.get_value() <<  " | "; }, item);
         }
+        std::cout<<"\n";
     }
 }
 
