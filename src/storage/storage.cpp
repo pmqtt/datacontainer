@@ -191,7 +191,9 @@ void chakra::storage_table::print() {
         header_keys[iter->first] = key;
         ++iter;
     }
-
+    std::cout
+            << "-----------------------------------------------------------------------------------"
+            << std::endl;
     for(auto key : header_keys){
         std::cout << key << " | ";
     }
@@ -203,5 +205,8 @@ void chakra::storage_table::print() {
         }
         std::cout<<"\n";
     }
+    std::cout
+            << "-----------------------------------------------------------------------------------"
+            << std::endl;
 }
 
