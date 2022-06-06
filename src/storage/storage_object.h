@@ -94,6 +94,8 @@ storage_type<storage_object_result_t<X,C1,Y,C2>,C1>
 
 
 
+
+
 using storage_bool = storage_type<bool, bool_comparable>;
 using storage_int = storage_type<int, numeric_comparable>;
 using storage_real = storage_type<double, numeric_comparable>;
