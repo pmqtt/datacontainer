@@ -23,7 +23,7 @@ private:
 public:
     data_container_service(const std::vector<yaml_type_node> & cfg,  chakra::storage_manager & mgr) : config(cfg), db_manager(mgr){ }
     void run();
-    std::vector<std::pair<std::string,base_storage_object>> createRow(std::map<std::string,std::shared_ptr<format_type>> format_map);
+    std::vector<std::pair<std::string,base_storage_object>> createRow(const std::string &msg);
 
 };
 

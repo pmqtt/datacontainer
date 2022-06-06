@@ -8,6 +8,7 @@
 #include "../exceptions/typedef_exception.h"
 #include "../storage/data_types.h"
 #include "../storage/storage_object.h"
+#include "../server/value_command.h"
 #include "yaml-cpp/yaml.h"
 #include <string>
 
@@ -101,7 +102,7 @@ struct yaml_read_event_node{
     std::string broker_adr;
     std::string subscribe;
     std::string format_def;
-    std::map<std::string,std::string> insertions;
+    std::map<std::string,std::optional<std::shared_ptr<value_command>>> insertions;
     std::vector<yaml_read_event_node> nextEvents;
 };
 

@@ -42,6 +42,18 @@ TEMPERATURE_SENSOR_01:
       - reset: true
  */
 
+template<class EXPECTED_TYPE>
+bool test_value_command(const std::optional<std::shared_ptr<value_command>> & test_subject){
+    if(test_subject){
+        auto  inner_object = (*test_subject);
+        auto ptr = inner_object.get();
+        if(dynamic_cast<EXPECTED_TYPE*>(ptr) != nullptr){
+            return true;
+        }
+    }
+    return false;
+}
+
 BOOST_AUTO_TEST_SUITE(TypeConfigYamlTestSuite)
 
     BOOST_AUTO_TEST_CASE(LoadFileTest){
@@ -73,10 +85,11 @@ BOOST_AUTO_TEST_SUITE(TypeConfigYamlTestSuite)
         BOOST_CHECK(sensorType.read_event.broker_adr == "localhost:1883");
         BOOST_CHECK(sensorType.read_event.subscribe == "SENSOR/01/TEMPERATURE");
         BOOST_CHECK_MESSAGE(sensorType.read_event.format_def == "%r %s", "GET " + sensorType.read_event.format_def);
-        BOOST_CHECK(sensorType.read_event.insertions[values[0].key] == "ink_index(0)");
-        BOOST_CHECK(sensorType.read_event.insertions[values[1].key] == "timestamp");
-        BOOST_CHECK(sensorType.read_event.insertions[values[2].key] == "$1");
-        BOOST_CHECK(sensorType.read_event.insertions[values[3].key] == "$2");
+
+        BOOST_CHECK(test_value_command<value_increment_index_command>(sensorType.read_event.insertions[values[0].key]));
+        BOOST_CHECK(test_value_command<value_timestamp_command>(sensorType.read_event.insertions[values[1].key]));
+        BOOST_CHECK(test_value_command<value_argument_command>(sensorType.read_event.insertions[values[2].key] ));
+        BOOST_CHECK(test_value_command<value_argument_command>(sensorType.read_event.insertions[values[3].key] ));
 
         BOOST_CHECK(sensorType.send_event.connection_type == "mqtt");
         BOOST_CHECK(sensorType.send_event.broker_adr == "localhost:1883");

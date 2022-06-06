@@ -12,18 +12,12 @@
 
 
 std::vector<std::pair<std::string, base_storage_object>>
-data_container_service::createRow(std::map<std::string, std::shared_ptr<format_type>> format_map) {
+data_container_service::createRow(const std::string &msg) {
     auto &tbl = this->db_manager.get_table(config[0].key);
     std::vector<std::pair<std::string, base_storage_object>> result;
     for (auto &iter: this->config[0].read_event.insertions) {
-        auto command = make_value_commad(iter.second);
-        if(command){
-            result.emplace_back(iter.first, (*command)->execute(tbl));
-        }else{
-            std::smatch sm;
-            std::regex x("\\$[0-9]+");
-            std::regex_match(iter.second, sm, x);
-            result.emplace_back(iter.first, format_map[sm[0]]->create_base_storage_object());
+        if(iter.second){
+            result.emplace_back(iter.first, (*(iter.second))->execute(tbl,msg));
         }
     }
     return result;
@@ -46,16 +40,8 @@ void data_container_service::run() {
                                          std::pair<std::string, std::string> message = messenger->getMessage();
                                          if (message.first != "") {
                                              auto &tbl = this->db_manager.get_table(config[0].key);
-
-                                             format fmt(config[0].read_event.format_def);
-
-                                             if (fmt.interpret(message.second)) {
-                                                 auto arguments = fmt.get_arguments_map();
-                                                 auto row = createRow(arguments);
-                                                 tbl.insert(row);
-                                             } else {
-                                                 std::cout << "Wrong format_def in message" << std::endl;
-                                             }
+                                             auto row = createRow(message.second);
+                                             tbl.insert(row);
                                              std::cout
                                                      << "===================================================================================="
                                                      << std::endl;

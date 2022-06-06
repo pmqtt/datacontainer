@@ -29,7 +29,7 @@ namespace YAML {
 
             for(std::size_t i = 0; i < node["insert"].size(); ++i){
                 for(const auto & iter : node["insert"][i]){
-                    rhs.insertions[iter.first.as<std::string>()] = iter.second.as<std::string>();
+                    rhs.insertions[iter.first.as<std::string>()] = make_value_command(iter.second.as<std::string>(),rhs.format_def);
                 }
             }
             if(node["read_event"].IsDefined()) {

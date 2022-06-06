@@ -9,9 +9,12 @@
 
 #include <cstring>
 
+
 #include <functional>
+#include <iostream>
 #include <map>
 #include <memory>
+#include <regex>
 #include <string>
 
 
@@ -61,7 +64,7 @@ static const std::map<std::string,std::function<std::shared_ptr<value_command>(c
 
 static const std::vector<std::string> command_pallete ={"ink_index","timestamp"};
 
-std::optional<std::shared_ptr<value_command>> make_value_commad(const std::string & str) {
+std::optional<std::shared_ptr<value_command>> make_value_command(const std::string & str,const std::string &format_def) {
     for (const auto &x: command_pallete) {
         if (str.starts_with(x)) {
             if(commands.count(x) > 0) {
@@ -69,5 +72,9 @@ std::optional<std::shared_ptr<value_command>> make_value_commad(const std::strin
             }
         }
     }
+
+    format fmt(format_def);
+    return std::make_shared<value_argument_command>(fmt,str);
+
     return {};
 }
