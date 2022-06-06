@@ -10,12 +10,6 @@
 #include "../api/date_time.h"
 #include "value_command.h"
 
-int indexStartValue(const std::string &item) {
-    std::size_t pos = item.find(")");
-    std::size_t start = item.find("ink_index(");
-    std::string value = item.substr(start + 10, pos - (start + 10));
-    return std::atoi(value.c_str());
-}
 
 std::vector<std::pair<std::string, base_storage_object>>
 data_container_service::createRow(std::map<std::string, std::shared_ptr<format_type>> format_map) {
