@@ -70,46 +70,8 @@ chakra::storage_table::storage_table(base_catalog_item *item)
         : tbl(item) {
     index = 0;
 }
-/*
-chakra::storage_table::storage_table(storage_table &&rhs) {
-    tbl = rhs.tbl;
-    rhs.tbl = nullptr;
-    header_description = std::move(rhs.header_description);
-    header_size = rhs.header_size;
-    index = rhs.index;
-    queue = rhs.queue;
-}
 
-chakra::storage_table::storage_table(const chakra::storage_table &rhs) {
-    tbl = rhs.tbl;
-    header_description = rhs.header_description;
-    header_size = rhs.header_size;
-    index = rhs.index;
-    queue = rhs.queue;
-}
 
-chakra::storage_table &chakra::storage_table::operator=(storage_table &&rhs) {
-
-    tbl = rhs.tbl;
-    rhs.tbl = nullptr;
-    header_description = rhs.header_description;
-    header_size = rhs.header_size;
-    index = rhs.index;
-    queue = rhs.queue;
-    return *this;
-}
-
-chakra::storage_table &chakra::storage_table::operator=(const storage_table &rhs) {
-    tbl = rhs.tbl;
-    header_description = rhs.header_description;
-    header_size = rhs.header_size;
-    index = rhs.index;
-    queue = rhs.queue;
-
-    return *this;
-
-}
-*/
 //list case
 void chakra::storage_table::insert(const base_storage_object &obj) {
     if (std::holds_alternative<list_container>(*tbl)) {

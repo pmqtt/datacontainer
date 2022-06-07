@@ -62,10 +62,7 @@ namespace chakra{
     public:
         storage_table() = default;
         storage_table( base_catalog_item * item);
-        /*storage_table( storage_table && rhs);
-        storage_table( const storage_table & rhs);
-        storage_table & operator=( storage_table && rhs);
-        storage_table & operator=( const storage_table & rhs);*/
+
         //list case
         void insert(const base_storage_object & obj);
 
