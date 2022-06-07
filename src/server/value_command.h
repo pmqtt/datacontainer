@@ -51,7 +51,7 @@ private:
 };
 
 struct value_argument_command : public value_command{
-    value_argument_command(const format & f,const std::string & str) : fmt(f),cmd(str){}
+    value_argument_command(const std::string & format_def,const std::string & str) : f_def(format_def),cmd(str){}
     ~value_argument_command() override = default;
     base_storage_object execute(chakra::storage_table & tbl,const std::string & value) override{
         UNUSED(tbl);
@@ -59,16 +59,20 @@ struct value_argument_command : public value_command{
         std::smatch sm;
         std::regex x("\\$[0-9]+");
         std::cout<<"value:"<<value<<std::endl;
+        format fmt(f_def);
         if(fmt.interpret(value)) {
             auto format_map = fmt.get_arguments_map();
             if (std::regex_match(cmd, sm, x)) {
                 return format_map[sm[0]]->create_base_storage_object();
+            }else{
+                throw std::runtime_error("Regex exception: " + cmd + " value:" + value);
             }
+        }else {
+            throw std::runtime_error("Format exception: " + cmd + " value:" + value);
         }
-        throw std::runtime_error("error");
     }
 private:
-    format fmt;
+    std::string f_def;
     std::string cmd;
 };
 

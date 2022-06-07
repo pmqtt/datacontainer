@@ -47,7 +47,7 @@ chakra::storage_table &chakra::storage_manager::get_table(const std::string &nam
     return storage_heap[name];
 }
 
-void chakra::storage_table::create_header(const chakra::header_desc &desc) {
+void chakra::storage_table::insert_header_description(const chakra::header_desc &desc) {
     header_description = desc;
     header_size = 0;
     for (auto [x, y]: header_description) {
@@ -70,7 +70,7 @@ chakra::storage_table::storage_table(base_catalog_item *item)
         : tbl(item) {
     index = 0;
 }
-
+/*
 chakra::storage_table::storage_table(storage_table &&rhs) {
     tbl = rhs.tbl;
     rhs.tbl = nullptr;
@@ -109,7 +109,7 @@ chakra::storage_table &chakra::storage_table::operator=(const storage_table &rhs
     return *this;
 
 }
-
+*/
 //list case
 void chakra::storage_table::insert(const base_storage_object &obj) {
     if (std::holds_alternative<list_container>(*tbl)) {

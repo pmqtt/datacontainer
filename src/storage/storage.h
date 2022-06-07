@@ -50,22 +50,22 @@ namespace chakra{
         base_catalog_item *tbl;
         header_desc header_description;
         std::size_t header_size;
+    private:
         int index;
         message_queue<std::string> queue;
 
     public:
-        void create_header(const header_desc & desc);
+        void insert_header_description(const header_desc & desc);
 
     private:
         std::size_t find_column_index(const std::string& name);
     public:
         storage_table() = default;
         storage_table( base_catalog_item * item);
-        storage_table( storage_table && rhs);
+        /*storage_table( storage_table && rhs);
         storage_table( const storage_table & rhs);
         storage_table & operator=( storage_table && rhs);
-        storage_table & operator=( const storage_table & rhs);
-
+        storage_table & operator=( const storage_table & rhs);*/
         //list case
         void insert(const base_storage_object & obj);
 
@@ -74,8 +74,8 @@ namespace chakra{
         std::vector<base_storage_object> find(const index_value_type & key);
 
         std::vector<base_storage_object> find(const std::chrono::milliseconds & key);
-        std::string create_index(int value);
 
+        std::string create_index(int value);
         void aggregate_table(const std::string & column_name, const std::function<void(base_storage_object & item)> & func);
 
         base_catalog_item *get_inner_table()const;

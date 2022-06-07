@@ -52,7 +52,7 @@ int main(int argc, char ** argv) {
         mgr.add_catalog_entry(config.key,chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE);
         auto & tbl = mgr.get_table(config.key);
         std::vector<chakra::header_item> header = create_header_from_config(config);
-        tbl.create_header(chakra::make_header(header));
+        tbl.insert_header_description(chakra::make_header(header));
     }
     data_container_service service(configs, mgr);
     service.run();

@@ -43,7 +43,7 @@ BOOST_AUTO_TEST_CASE(CHACKRA_TABLE_TEST){
     db.add_catalog_entry("test1",chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE);
     chakra::storage_table st_table = db.get_table("test1");
     auto header = chakra::make_header({ {"id",storage_int(0)},{"timestamp",storage_string("")},{"temperature",storage_real()},{"message",storage_string("")}   });
-    st_table.create_header(header);
+        st_table.insert_header_description(header);
 
     std::vector<std::pair<std::string,base_storage_object>> v = { {"id",storage_int(0)},{"timestamp",storage_string("02-06-2022 21:21:22")},{"temperature",storage_real(12.3)},{"message",storage_string("no message")}   };
     st_table.insert(v);

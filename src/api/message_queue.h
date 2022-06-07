@@ -30,25 +30,28 @@ public:
         this->run = true;
 
     }
-    ~message_queue(){
-    }
+    ~message_queue()=default;
 
     message_queue(message_queue && rhs){
         queue = std::move(rhs.queue);
-
+        run = std::move(rhs.run);
     }
     message_queue(const message_queue & rhs){
-
         queue = rhs.queue;
+        run = rhs.run.load();
     }
 
 
     message_queue &operator=(message_queue && rhs){
+        if(this == &rhs) return *this;
         queue = std::move(rhs.queue);
+        run = std::move(rhs.run);
         return *this;
     }
     message_queue &operator=(const message_queue & rhs){
+        if(this == &rhs) return *this;
         queue = rhs.queue;
+        run = rhs.run.load();
         return *this;
     }
 

@@ -49,7 +49,7 @@ private:
  *  hash_map<data_type,std::vector<data_type>> datas;
  *
  *  multi_index_table mTable;
- *  mTable.create_header({"ID",TYPE_KIND::INT},{"TEMPERATURE",TYPE_KIND::STRING},{"MESSAGE",TYPE_KIND::STRING},{"TIME",TYPE_KIND::string})
+ *  mTable.insert_header_description({"ID",TYPE_KIND::INT},{"TEMPERATURE",TYPE_KIND::STRING},{"MESSAGE",TYPE_KIND::STRING},{"TIME",TYPE_KIND::string})
  *  mTable.createIndex("ID",UNIQUE_INDEX);
  *  mTable.create_index("TIME",DATETIME_INDEX);
  *  mTable.create_index("TEMPERATURE",INTERVALL_INDEX);

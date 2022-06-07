@@ -73,8 +73,7 @@ std::optional<std::shared_ptr<value_command>> make_value_command(const std::stri
         }
     }
 
-    format fmt(format_def);
-    return std::make_shared<value_argument_command>(fmt,str);
+    return std::make_shared<value_argument_command>(format_def,str);
 
     return {};
 }

@@ -37,6 +37,7 @@ struct format_type{
     virtual void handle(format_type_visitor * visitor) {
         UNUSED(visitor);
     }
+    virtual void clear() = 0;
 };
 
 struct format_type_word : public format_type{
@@ -64,7 +65,10 @@ struct format_type_word : public format_type{
         return toAcceptedWord;
     }
     void handle(format_type_visitor * visitor) override;
-
+    void clear() override{
+        index = 0;
+        toAcceptedWord ="";
+    }
 
 };
 
@@ -95,6 +99,9 @@ struct format_type_real: public format_type{
     base_storage_object create_base_storage_object() override {
         return storage_real(std::atof(argument.c_str()));
     }
+    void clear() override{
+        argument="";
+    }
 };
 
 struct format_type_string: public format_type{
@@ -116,6 +123,9 @@ struct format_type_string: public format_type{
     base_storage_object create_base_storage_object() override {
         return storage_string(argument);
     }
+    void clear() override{
+        argument="";
+    }
 };
 
 template<char X>
@@ -126,6 +136,7 @@ struct format_date_time_type : public format_type{
     }
 
     void handle(format_type_visitor * visitor) override;
+    void clear() override{}
 };
 
 

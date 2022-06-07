@@ -5,10 +5,10 @@
 #include "../src/storage/storage_object.h"
 
 
+
 BOOST_AUTO_TEST_SUITE(StorageObjectSuite)
 
     BOOST_AUTO_TEST_CASE(Test1) {
-        BOOST_CHECK(true);
 
     }
 
