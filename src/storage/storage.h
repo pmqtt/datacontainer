@@ -6,7 +6,7 @@
 #define DATACONTAINER_STORAGE_H
 
 #include "../api/message_queue.h"
-#include "../datastructure/table.h"
+#include "../datastructure/hash_map.h"
 #include "../datastructure/time_tree.h"
 #include "../exceptions/not_allowed_method_call_excaption.h"
 #include "data_types.h"
@@ -23,11 +23,11 @@
 
 namespace chakra{
     using list_container = std::list<base_storage_object>;
-    using key_value_container = ptl::table<index_value_type,std::vector<base_storage_object>>;
+    using key_value_container = ptl::hash_map<index_value_type,std::vector<base_storage_object>>;
     using time_series_container = ptl::time_tree<std::vector<base_storage_object >>;
     using table_container = std::vector<std::vector<base_storage_object >>;
     using header_item = std::pair<std::string,base_storage_object>;
-    using header_desc = ptl::table<std::string,std::pair<std::size_t,base_storage_object>>;
+    using header_desc = ptl::hash_map<std::string,std::pair<std::size_t,base_storage_object>>;
     header_desc make_header(const std::vector<header_item> & header);
 
 

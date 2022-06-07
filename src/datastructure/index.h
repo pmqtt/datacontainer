@@ -4,7 +4,7 @@
 
 #ifndef DATACONTAINER_INDEX_H
 #define DATACONTAINER_INDEX_H
-#include "table.h"
+#include "hash_map.h"
 
 struct index{
     virtual ~index(){}

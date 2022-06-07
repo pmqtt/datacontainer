@@ -116,7 +116,7 @@ void chakra::storage_table::insert(const base_storage_object &obj) {
         list_container &l = std::get<list_container>(*tbl);
         l.emplace_back(obj);
     } else {
-        throw std::runtime_error("method call is not allowed, beacause table is not a list");
+        throw std::runtime_error("method call is not allowed, beacause hash_map is not a list");
     }
 }
 
@@ -134,7 +134,7 @@ void chakra::storage_table::insert(const std::vector<std::pair<std::string, base
             std::get<key_value_container>(*tbl)[key] = content;
         }
     } else {
-        throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
+        throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
     }
 }
 
@@ -142,7 +142,7 @@ std::vector<base_storage_object> chakra::storage_table::find(const index_value_t
     if (std::holds_alternative<key_value_container>(*tbl)) {
         return std::get<key_value_container>(*tbl)[key];
     } else {
-        throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
+        throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
     }
 }
 
@@ -150,7 +150,7 @@ std::vector<base_storage_object> chakra::storage_table::find(const std::chrono::
     if (std::holds_alternative<time_series_container>(*tbl)) {
         return std::get<time_series_container>(*tbl).find_exact(key).value;
     } else {
-        throw not_allowed_method_call_excaption("method call is not allowed, beacause table is not a chakra table");
+        throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
     }
 }
 

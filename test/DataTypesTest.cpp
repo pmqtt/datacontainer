@@ -8,7 +8,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/datastructure/table.h"
+#include "../src/datastructure/hash_map.h"
 #include "../src/api/prime_stream.h"
 #include "../src/api/time_measure.h"
 #include "../src/storage/data_types.h"
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_SUITE(DataTypesTestSuite)
     }
 
     BOOST_AUTO_TEST_CASE(STORAGE_OBJECT_ADD_TO_VECTOR) {
-        ptl::table<base_storage_object,std::vector<base_storage_object>> foo;
+        ptl::hash_map<base_storage_object,std::vector<base_storage_object>> foo;
         foo[storage_string("HALLO")].emplace_back(storage_int(2));
     }
 

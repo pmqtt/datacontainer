@@ -7,7 +7,7 @@
 #include <boost/test/included/unit_test.hpp>
 #include <vector>
 #include <string>
-#include "../src/datastructure/table.h"
+#include "../src/datastructure/hash_map.h"
 #include "../src/api/prime_stream.h"
 #include "../src/api/time_measure.h"
 #include "../src/storage/data_types.h"

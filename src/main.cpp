@@ -17,9 +17,9 @@ void old_stuff(int argc, char **argv){
     auto configs = file.load();
     storage storage;
     for(auto & config : configs) {
-        std::shared_ptr<storage_node> table = storage.add_table(config.key);
+        std::shared_ptr<storage_node> hash_map = storage.add_table(config.key);
         for (auto &iter: config.values) {
-            table->add_field(iter.key,
+            hash_map->add_field(iter.key,
                              iter.value->get_type_kind(),
                              iter.value->create_property());
         }

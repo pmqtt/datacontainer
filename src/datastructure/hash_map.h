@@ -79,7 +79,7 @@ namespace ptl {
 #else
     template<class KEY,class VALUE, int N=hash_stream::PRIME_ARRAY[0], int M = hash_stream::PRIME_ARRAY[1], class STREAM = hash_stream >
 #endif
-    class table {
+    class hash_map {
     public:
         struct iterator {
 
@@ -211,20 +211,20 @@ namespace ptl {
         }
 
     public:
-        table() {
+        hash_map() {
             first_container = nullptr;
             second_container = nullptr;
             allocate();
             init_container(N, M);
         }
 
-        virtual ~table() {
+        virtual ~hash_map() {
             deallocate();
             current_size_first_container = -1;
             current_size_second_container = -1;
         }
 
-        table(const table &rhs) {
+        hash_map(const hash_map &rhs) {
             first_container = nullptr;
             second_container = nullptr;
             allocate(rhs.current_size_first_container, rhs.current_size_second_container);
@@ -240,7 +240,7 @@ namespace ptl {
 
         }
 
-        table(table &&rhs) noexcept {
+        hash_map(hash_map &&rhs) noexcept {
             first_container = nullptr;
             second_container = nullptr;
             current_size_first_container = rhs.current_size_first_container;
@@ -255,7 +255,7 @@ namespace ptl {
 
         }
 
-        table &operator=(const table &rhs) {
+        hash_map &operator=(const hash_map &rhs) {
             if (this != &rhs) {
                 deallocate();
                 first_container = nullptr;
@@ -274,7 +274,7 @@ namespace ptl {
             return *this;
         }
 
-        table &operator=(table &&rhs) noexcept {
+        hash_map &operator=(hash_map &&rhs) noexcept {
             if (this != &rhs) {
                 deallocate();
                 current_size_first_container = rhs.current_size_first_container;

@@ -12,7 +12,7 @@
 
 
 #include "index.h"
-#include "table.h"
+#include "hash_map.h"
 #include "../storage/data_types.h"
 
 
@@ -46,7 +46,7 @@ private:
  *
  * int foo(){
  * //CREATE DATAS [ID,TEMPERATURE,MESSAGE,TIME]
- *  table<data_type,std::vector<data_type>> datas;
+ *  hash_map<data_type,std::vector<data_type>> datas;
  *
  *  multi_index_table mTable;
  *  mTable.create_header({"ID",TYPE_KIND::INT},{"TEMPERATURE",TYPE_KIND::STRING},{"MESSAGE",TYPE_KIND::STRING},{"TIME",TYPE_KIND::string})
