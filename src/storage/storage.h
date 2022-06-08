@@ -63,22 +63,26 @@ namespace chakra{
         storage_table() = default;
         storage_table( base_catalog_item * item);
 
-        //list case
+    public:
         void insert(const base_storage_object & obj);
-
         void insert(const std::vector<std::pair<std::string, base_storage_object>> & entry);
 
+    public:
         std::vector<base_storage_object> find(const index_value_type & key);
-
         std::vector<base_storage_object> find(const std::chrono::milliseconds & key);
 
+    public:
         std::string create_index(int value);
         void aggregate_table(const std::string & column_name, const std::function<void(base_storage_object & item)> & func);
 
-        base_catalog_item *get_inner_table()const;
+    public:
         std::string get_event();
-
+    public:
         void print();
+
+    public:
+        base_catalog_item *get_inner_table()const;
+
 
     };
 

@@ -38,7 +38,6 @@ void format::parse(){
 bool format::interpret(const std::string & x){
     unsigned long j = 0;
     auto format_arg = this->format_list[j];
-    format_arg->clear();
     for(unsigned long i = 0; i < x.length(); i++){
         if(!format_arg->accept(x[i])){
             j = j +1;

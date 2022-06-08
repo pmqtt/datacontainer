@@ -30,7 +30,8 @@ file(GLOB ALL_OBJ "src/*.cpp" "src/*.h"
         "src/datastructure/*.h" "src/datastructure.cpp"
         "src/typeconfig/*.h" "src/typeconfig/*.cpp"
         "src/configuration/*.h" "src/configuration/*.cpp"
-        "src/server/*.h" "src/server/*.cpp")
+        "src/server/*.h" "src/server/*.cpp"
+        "src/parser/*.h" "src/parser/*.cpp")
 
 list(REMOVE_ITEM ALL_OBJ ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp)
 
