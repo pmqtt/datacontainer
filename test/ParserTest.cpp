@@ -2,18 +2,32 @@
 #define BOOST_TEST_MODULE ParserTest_MODULE
 
 #include <boost/test/included/unit_test.hpp>
-#include "../src/parser/grammar.h"
+#include "../src/parser/constraint_grammar.h"
 
-
+struct result_visitor{
+    std::string input;
+    void operator()(bool x){
+        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << x << std::endl;
+    }
+    void operator()(double x){
+        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << x << std::endl;
+    }
+    void operator()(std::string x){
+        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << std::quoted(x) << std::endl;
+    }
+    void operator()(std::vector<arg_result> & x){
+        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << "std::vector<arg_result>" << std::endl;
+    }
+};
 
 
 
 void test1(std::string input)
 {
     std::cout<<"------------------------------------------------------------------------------------------"<<std::endl;
-    ASTNode* out_node;
+    ast_node* out_node;
     std::cout<<"Try parse: "<<std::quoted(input)<<std::endl;
-    PhraseParseOrDie(input, ArithmeticGrammar1(), qi::space, out_node);
+    parse_grammar(input, constraint_grammar(), qi::space, out_node);
     std::cout<<"Try to evaluate: "<<std::quoted(input)<<std::endl;
     if(out_node != nullptr) {
         auto eval = out_node->evaluate();
