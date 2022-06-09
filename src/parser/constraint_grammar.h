@@ -76,26 +76,26 @@ public:
         cmp_op =  qi::string("<=") | qi::string(">=")|qi::string("<")   |  qi::string(">") | qi::string("==") |
                  qi::string("!=");
 
-        if_clause = ( qi::lit("if") >> '(' >> start >> ')'>> start >> -(qi::lit("else") >> start) ) [ qi::_val = phx::new_<if_node>(qi::_1,qi::_2,qi::_3) ];
+        if_clause = ( qi::lit("if") >> '(' >> start >> ')'>> start >> -(qi::lit("else") >> start) ) [ qi::_val = ptl::make_shared_<if_node>()(qi::_1,qi::_2,qi::_3) ];
 
         start = if_clause [ qi::_val = qi::_1 ]|
                 (term >> cmp_op >> start)
-                [qi::_val = phx::new_<operator_node>(qi::_2, qi::_1, qi::_3)] |
-                term[qi::_val = qi::_1] | qi::eps[qi::_val = phx::new_<empty_node>()];
+                [qi::_val = ptl::make_shared_<operator_node>()(qi::_2, qi::_1, qi::_3)] |
+                term[qi::_val = qi::_1] | qi::eps[qi::_val = ptl::make_shared_<empty_node>()()];
         term = (product >> product_op >> term)
-               [qi::_val = phx::new_<operator_node>(qi::_2, qi::_1, qi::_3)] |
+               [qi::_val = ptl::make_shared_<operator_node>()(qi::_2, qi::_1, qi::_3)] |
                product[qi::_val = qi::_1];
         product = (factor >> factor_op >> product)
-                  [qi::_val = phx::new_<operator_node>(qi::_2, qi::_1, qi::_3)] |
+                  [qi::_val = ptl::make_shared_<operator_node>()(qi::_2, qi::_1, qi::_3)] |
                   factor[qi::_val = qi::_1];
         factor = group[qi::_val = qi::_1] |
-                 qi::double_[qi::_val = phx::new_<constant_node>(qi::_1)] |
-                 ('"' >> str >> '"')[qi::_val = phx::new_<constant_node>(qi::_1)] |
+                 qi::double_[qi::_val = ptl::make_shared_<constant_node>()(qi::_1)] |
+                 ('"' >> str >> '"')[qi::_val = ptl::make_shared_<constant_node>()(qi::_1)] |
                  function_call[qi::_val = qi::_1];
-        function_call = (identifier >> '(' >> arguments >> ')')[qi::_val = phx::new_<function_node>(qi::_1, qi::_2)] |
-                        identifier[qi::_val = phx::new_<identifier_node>(qi::_1)];
+        function_call = (identifier >> '(' >> arguments >> ')')[qi::_val = ptl::make_shared_<function_node>()(qi::_1, qi::_2)] |
+                        identifier[qi::_val = ptl::make_shared_<identifier_node>()(qi::_1)];
 
-        arguments = (start[qi::_val = qi::_1] >> *(',' >> start)[qi::_val = qi::_1])[qi::_val = phx::new_<argument_node>(qi::_1, qi::_2)];
+        arguments = (start[qi::_val = qi::_1] >> *(',' >> start)[qi::_val = qi::_1])[qi::_val = ptl::make_shared_<argument_node>()(qi::_1, qi::_2)];
 
         group %= '(' >> start >> ')';
 

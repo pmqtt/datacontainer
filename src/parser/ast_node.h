@@ -28,7 +28,7 @@ public:
     virtual ~ast_node() { }
 };
 
-using ASTNodePtr = ast_node*;
+using ASTNodePtr = std::shared_ptr<ast_node>;
 
 
 struct if_node : public ast_node{

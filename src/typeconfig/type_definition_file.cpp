@@ -67,12 +67,12 @@ namespace YAML {
             rhs.message = node["message"].as<std::string>();
             auto prepare_node = node["prepare"];
             for(const auto & item : prepare_node) {
-                ast_node * prepare_cmd;
+                ASTNodePtr prepare_cmd;
                 std::string input = item.as<std::string>();
                 parse_grammar(input, constraint_grammar(), qi::space, prepare_cmd);
                 rhs.prepare.push_back(prepare_cmd) ;
             }
-            ast_node * when_cmd;
+            ASTNodePtr when_cmd;
             parse_grammar(node["when"].as<std::string>(), constraint_grammar(), qi::space, when_cmd);
             rhs.when = when_cmd;
 

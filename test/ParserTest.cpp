@@ -26,7 +26,7 @@ struct result_visitor{
 void test1(std::string input)
 {
     std::cout<<"------------------------------------------------------------------------------------------"<<std::endl;
-    ast_node* out_node;
+    ASTNodePtr out_node;
     std::cout<<"Try parse: "<<std::quoted(input)<<std::endl;
     parse_grammar(input, constraint_grammar(), qi::space, out_node);
     std::cout<<"Try to evaluate: "<<std::quoted(input)<<std::endl;
@@ -39,7 +39,6 @@ void test1(std::string input)
         res_visitor.input = input;
         std::visit(res_visitor,eval);
 
-        delete out_node;
     }else{
         std::cout<<"produce empty node"<<std::endl;
     }

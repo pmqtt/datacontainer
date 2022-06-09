@@ -111,9 +111,9 @@ struct yaml_send_event_node{
     std::string connection_type;
     std::string broker_adr;
     std::string topic;
-    std::vector<ast_node*>  prepare;
+    std::vector<ASTNodePtr>  prepare;
     std::string message;
-    ast_node* when;
+    ASTNodePtr when;
 };
 
 struct yaml_values_node{

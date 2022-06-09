@@ -50,10 +50,6 @@ public:
         return -1.23456;
     }
 
-    ~operator_node() {
-        delete left;
-        delete right;
-    }
 
 private:
     std::string op;
