@@ -24,9 +24,10 @@ std::map<std::string,std::function<evaluation_result(const std::vector<arg_resul
         }},
 };
 
-evaluation_result function_node::evaluate() {
+evaluation_result function_node::evaluate(chakra::storage_table & tbl) {
+    UNUSED(tbl);
     try {
-        auto arguments = args->evaluate();
+        auto arguments = args->evaluate(tbl);
         return built_in_functions[function_name](std::get<std::vector<arg_result>>(arguments));
     }catch(std::bad_function_call & e){
         std::cout<<"really bad function: "<<function_name<<std::endl;

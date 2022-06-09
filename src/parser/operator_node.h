@@ -13,38 +13,39 @@ public:
             :op(op), left(left), right(right) {
     }
 
-    evaluation_result evaluate() {
+    evaluation_result evaluate(chakra::storage_table & tbl) override {
+        UNUSED(tbl);
         if(op == "<"){
-            return std::get<double>(left->evaluate()) < std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) < std::get<double>(right->evaluate(tbl));
         }
         if(op == "<="){
-            return std::get<double>(left->evaluate()) <= std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) <= std::get<double>(right->evaluate(tbl));
         }
         if(op == ">"){
-            return std::get<double>(left->evaluate()) > std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) > std::get<double>(right->evaluate(tbl));
         }
         if(op == ">="){
-            return std::get<double>(left->evaluate()) >= std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) >= std::get<double>(right->evaluate(tbl));
         }
         if(op == "=="){
-            return std::get<double>(left->evaluate()) == std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) == std::get<double>(right->evaluate(tbl));
         }
         if(op == "!="){
-            return std::get<double>(left->evaluate()) != std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) != std::get<double>(right->evaluate(tbl));
         }
 
 
         if (op == "+") {
-            return std::get<double>(left->evaluate()) + std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) + std::get<double>(right->evaluate(tbl));
         }
         if (op == "-") {
-            return std::get<double>(left->evaluate()) - std::get<double>(right->evaluate());
+            return std::get<double>(left->evaluate(tbl)) - std::get<double>(right->evaluate(tbl));
         }
         if (op == "*") {
-            return std::get<double>(left->evaluate()) * std::get<double>(right->evaluate());;
+            return std::get<double>(left->evaluate(tbl)) * std::get<double>(right->evaluate(tbl));;
         }
         if (op == "/") {
-            return std::get<double>(left->evaluate()) / std::get<double>(right->evaluate());;
+            return std::get<double>(left->evaluate(tbl)) / std::get<double>(right->evaluate(tbl));;
         }
         return -1.23456;
     }

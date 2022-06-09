@@ -1,6 +1,7 @@
 #define BOOST_TEST_DYN_LINK 1
 #define BOOST_TEST_MODULE ParserTest_MODULE
 
+#include "../src/storage/storage.h"
 #include <boost/test/included/unit_test.hpp>
 #include "../src/parser/constraint_grammar.h"
 
@@ -30,7 +31,10 @@ void test1(std::string input)
     parse_grammar(input, constraint_grammar(), qi::space, out_node);
     std::cout<<"Try to evaluate: "<<std::quoted(input)<<std::endl;
     if(out_node != nullptr) {
-        auto eval = out_node->evaluate();
+        chakra::storage_manager store;
+        store.add_catalog_entry("p-test",chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE);
+
+        auto eval = out_node->evaluate(store.get_table("p-test"));
         result_visitor res_visitor;
         res_visitor.input = input;
         std::visit(res_visitor,eval);

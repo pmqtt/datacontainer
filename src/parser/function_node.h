@@ -14,7 +14,7 @@ public:
     function_node(const std::string & func_name, const ASTNodePtr & args) : function_name(func_name), args(args){
     }
 
-    evaluation_result evaluate();
+    evaluation_result evaluate(chakra::storage_table & tbl);
 
 private:
     std::string function_name;

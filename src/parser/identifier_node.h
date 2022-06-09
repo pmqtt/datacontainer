@@ -12,7 +12,8 @@ public:
     identifier_node(const std::string & name) : name(name){
     }
 
-    evaluation_result evaluate() {
+    evaluation_result evaluate(chakra::storage_table & tbl) {
+        UNUSED(tbl);
         return -1.0;
     }
 

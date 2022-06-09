@@ -15,7 +15,8 @@ public:
     constant_node(const std::string & str)
             : is_double(false),string_value(str) { }
 
-    evaluation_result evaluate() {
+    evaluation_result evaluate(chakra::storage_table & tbl) {
+        UNUSED(tbl);
         if(is_double)
             return value;
         return string_value;

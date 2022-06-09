@@ -13,7 +13,7 @@ public:
     argument_node(const ASTNodePtr & a, const std::vector<ASTNodePtr> &args) : arg(a), args(args){
     }
 
-    evaluation_result evaluate();
+    evaluation_result evaluate(chakra::storage_table & tbl);
 
 private:
     ASTNodePtr  arg;

@@ -57,6 +57,8 @@ bool test_value_command(const std::optional<std::shared_ptr<value_command>> & te
 BOOST_AUTO_TEST_SUITE(TypeConfigYamlTestSuite)
 
     BOOST_AUTO_TEST_CASE(LoadFileTest){
+       chakra::storage_manager store;
+       store.add_catalog_entry("p-test",chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE);
        type_defintion_file file("typeconfigs/test_type_1.yml");
        std::vector<yaml_type_node> types = file.load();
        BOOST_CHECK_MESSAGE(types.size() == 1, "Count of readed types should 1 and not " + std::to_string(types.size()));
@@ -95,7 +97,7 @@ BOOST_AUTO_TEST_SUITE(TypeConfigYamlTestSuite)
         BOOST_CHECK(sensorType.send_event.broker_adr == "localhost:1883");
         BOOST_CHECK(sensorType.send_event.topic == "CALCULATED");
         BOOST_CHECK(sensorType.send_event.message == "$1 $2");
-        BOOST_CHECK(std::get<std::string>(sensorType.send_event.prepare[0]->evaluate()) == "HALLO WELT");
+        BOOST_CHECK(std::get<std::string>(sensorType.send_event.prepare[0]->evaluate(store.get_table("p-test"))) == "HALLO WELT");
 
 
     }

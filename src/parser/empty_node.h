@@ -13,7 +13,8 @@ public:
     empty_node(){
 
     }
-    evaluation_result evaluate() {
+    evaluation_result evaluate(chakra::storage_table & tbl) {
+        UNUSED(tbl);
         return {std::string("")};
     }
 

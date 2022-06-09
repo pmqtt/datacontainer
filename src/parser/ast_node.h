@@ -6,6 +6,8 @@
 #define DATACONTAINER_AST_NODE_H
 
 
+#include "../storage/storage.h"
+
 #include <boost/optional.hpp>
 
 #include <functional>
@@ -22,7 +24,7 @@ using evaluation_result = std::variant<bool,double,std::string,std::vector<arg_r
 class ast_node
 {
 public:
-    virtual evaluation_result evaluate() = 0;
+    virtual evaluation_result evaluate(chakra::storage_table & tbl) = 0;
     virtual ~ast_node() { }
 };
 
@@ -33,13 +35,13 @@ struct if_node : public ast_node{
     if_node(const ASTNodePtr & clause, const ASTNodePtr & then_block, const boost::optional< ASTNodePtr> & else_block)
         : clause(clause), then_block(then_block), else_block(else_block){
     }
-    evaluation_result evaluate(){
-        auto bool_expression = clause->evaluate();
+    evaluation_result evaluate(chakra::storage_table & tbl){
+        auto bool_expression = clause->evaluate(tbl);
         if(std::get<bool>(bool_expression)){
-            return then_block->evaluate();
+            return then_block->evaluate(tbl);
         }else{
             if(else_block) {
-                return (*else_block)->evaluate();
+                return (*else_block)->evaluate(tbl);
             }
             return -1.0;
         }
