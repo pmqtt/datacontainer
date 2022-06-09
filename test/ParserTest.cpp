@@ -55,10 +55,13 @@ BOOST_AUTO_TEST_SUITE(ParserTestSuite)
         test1("");
         test1("1+2*3-8");
         test1("1+2*3-8 < 4+5");
+        test1("1 >= 1");
         test1("constante()");
         test1("constante(2)");
         test1("identity(2+3) < constante()");
         test1("a");
+        test1("if ( 2 < 3 ) 2+3 else 2+7");
+        test1("if ( 3 < 2 ) 2+3 else 2+7");
     }
 
 BOOST_AUTO_TEST_SUITE_END()

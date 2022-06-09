@@ -6,6 +6,7 @@
 #define DATACONTAINER_TYPE_DEFINTION_FILE_H
 
 #include "../exceptions/typedef_exception.h"
+#include "../parser/constraint_grammar.h"
 #include "../storage/data_types.h"
 #include "../storage/storage_object.h"
 #include "../server/value_command.h"
@@ -110,7 +111,9 @@ struct yaml_send_event_node{
     std::string connection_type;
     std::string broker_adr;
     std::string topic;
-    std::string prepare;
+    std::vector<ast_node*>  prepare;
+    std::string message;
+    ast_node* when;
 };
 
 struct yaml_values_node{

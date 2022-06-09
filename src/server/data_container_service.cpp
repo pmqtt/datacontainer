@@ -58,6 +58,8 @@ void data_container_service::run() {
 
                                      while (1) {
                                          std::string event = tbl.get_event();
+                                          // AT THIS PART IS POSSIBLE TO USE AST_NODE to call preparation
+                                         /*
                                          std::string cmd_raw = config[0].send_event.prepare;
                                          if (cmd_raw.find("mean(") != std::string::npos) {
                                              std::size_t pos = cmd_raw.find("mean(") + 5;
@@ -78,7 +80,7 @@ void data_container_service::run() {
                                          } else {
                                              messenger->publish(config[0].send_event.topic, event);
                                          }
-
+*/
 
                                      }
                                  });

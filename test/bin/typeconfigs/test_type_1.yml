@@ -27,7 +27,8 @@ TEMPERATURE_SENSOR_01:
     type: mqtt
     broker: localhost:1883
     topic: CALCULATED
-    prepare: mean(TEMPERATURE)
-    when:
-      - count(TEMPERATURE) >= 3
-      - reset: true
+    prepare:
+      - mean(TEMPERATURE)
+      - mean(TEMPERATURE) + 10
+    message: $1 $2
+    when: count(TEMPERATURE) >= 3

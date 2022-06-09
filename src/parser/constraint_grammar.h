@@ -58,9 +58,13 @@ public:
         identifier %= qi::alpha >> *qi::alnum;
         product_op = qi::string("+") | qi::string("-");
         factor_op = qi::string("*") | qi::string("/");
-        cmp_op = qi::string("<") | qi::string("<=") | qi::string(">") | qi::string(">=") | qi::string("==") |
+        cmp_op =  qi::string("<=") | qi::string(">=")|qi::string("<")   |  qi::string(">") | qi::string("==") |
                  qi::string("!=");
-        start = (term >> cmp_op >> start)
+
+        if_clause = ( qi::lit("if") >> '(' >> start >> ')'>> start >> -(qi::lit("else") >> start) ) [ qi::_val = phx::new_<if_node>(qi::_1,qi::_2,qi::_3) ];
+
+        start = if_clause [ qi::_val = qi::_1 ]|
+                (term >> cmp_op >> start)
                 [qi::_val = phx::new_<operator_node>(qi::_2, qi::_1, qi::_3)] |
                 term[qi::_val = qi::_1] | qi::eps[qi::_val = phx::new_<empty_node>()];
         term = (product >> product_op >> term)
@@ -113,6 +117,7 @@ public:
     qi::rule<Iterator, std::string(), qi::space_type> product_op;
     qi::rule<Iterator, std::string(), qi::space_type> factor_op;
     qi::rule<Iterator, ASTNodePtr(), qi::space_type> arguments;
+    qi::rule<Iterator, ASTNodePtr(), qi::space_type> if_clause;
     qi::rule<Iterator, ASTNodePtr(), qi::space_type> start, group, term,product, factor,function_call;
 };
 

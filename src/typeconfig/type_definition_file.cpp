@@ -53,15 +53,29 @@ namespace YAML {
     - type: mqtt
     - broker: localhost:1883
     - topic: CALCULATED
-    - prepare: mean(TEMPERATURE)
-    - when:
-        - count(TEMPERATURE) >= 3
-        - reset: true
+    - prepare:
+        - mean(TEMPERATURE)
+        - mean(TEMPERATURE) +10
+    - message = $1 $2
+    - when: count(TEMPERATURE) >= 3
  */
+
+
             rhs.connection_type = node["type"].as<std::string>();
             rhs.broker_adr = node["broker"].as<std::string>();
             rhs.topic = node["topic"].as<std::string>();
-            rhs.prepare = node["prepare"].as<std::string>();
+            rhs.message = node["message"].as<std::string>();
+            auto prepare_node = node["prepare"];
+            for(const auto & item : prepare_node) {
+                ast_node * prepare_cmd;
+                std::string input = item.as<std::string>();
+                parse_grammar(input, constraint_grammar(), qi::space, prepare_cmd);
+                rhs.prepare.push_back(prepare_cmd) ;
+            }
+            ast_node * when_cmd;
+            parse_grammar(node["when"].as<std::string>(), constraint_grammar(), qi::space, when_cmd);
+            rhs.when = when_cmd;
+
             return true;
         }
     };
