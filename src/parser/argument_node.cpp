@@ -3,23 +3,7 @@
 //
 #include "argument_node.h"
 #include <stdexcept>
-struct argument_result_visitor{
-    arg_result operator()(bool x){
-        return x;
-    }
-    arg_result operator()(double x){
-        return x;
-    }
-    arg_result operator()(std::string x){
-        return x;
-    }
-    arg_result operator()(empty_result x){
-        return x;
-    }
-    arg_result operator()(std::vector<arg_result> & x){
-        throw std::runtime_error("not valid cast");
-    }
-};
+#include "ast_type_helpers.h"
 
 evaluation_result argument_node::evaluate(chakra::storage_table & tbl) {
     auto first_argument = arg->evaluate(tbl);

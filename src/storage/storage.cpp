@@ -138,17 +138,13 @@ void chakra::storage_table::aggregate_table(const std::string &column_name,
     auto key_value_store = std::get<key_value_container>(*tbl);
     std::size_t pos = find_column_index(column_name);
     for( auto iter : key_value_store){
-        std::cout<<"POSITION:"<<pos<<std::endl;
         auto &x = iter.second[pos];
         func(x);
     }
 
-    /*std::list<std::vector<base_storage_object>> allItems = key_value_store.convert_to_list();
+    /*
+    std::list<std::vector<base_storage_object>> allItems = key_value_store.convert_to_list();
     for (auto &iter: allItems) {
-        std::visit([&](auto &x){
-            std::cout <<"INSERT VALUE:" <<x.get_value();
-
-        },iter[pos]);
         func(iter[pos]);
     }*/
 }
@@ -195,3 +191,10 @@ void chakra::storage_table::create_trigger(const ASTNodePtr & condition,const st
     trigger_container.push_back(trigger);
 }
 
+chakra::storage_table::~storage_table(){
+    queue.deactivate();
+}
+
+void chakra::storage_table::disable_queue(){
+    queue.deactivate();
+}

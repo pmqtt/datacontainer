@@ -13,12 +13,11 @@
 
 
 std::vector<std::pair<std::string, base_storage_object>>
-data_container_service::createRow(const std::string &msg) {
-    auto &tbl = this->db_manager.get_table(config[0].key);
+data_container_service::createRow(chakra::storage_table & tbl,const std::string &msg) {
     std::vector<std::pair<std::string, base_storage_object>> result;
     for (auto &iter: this->config[0].read_event.insertions) {
-        if(iter.second){
-            result.emplace_back(iter.first, (*(iter.second))->execute(tbl,msg));
+        if (iter.second) {
+            result.emplace_back(iter.first, (*(iter.second))->execute(tbl, msg));
         }
     }
     return result;
@@ -32,66 +31,57 @@ void data_container_service::run() {
     this->messengers[config[0].type_name + "_SEND"] = std::make_shared<mqtt_messenger<2>>(
             config[0].read_event.broker_adr);
 
-    smart_thread<std::thread> s1([this]() {
-                                     this->messengers[config[0].type_name + "_READ"]->disconnect();
-                                 },
-                                 [this]() {
-                                     auto messenger = this->messengers[config[0].type_name + "_READ"];
-                                     while (1) {
-                                         std::pair<std::string, std::string> message = messenger->getMessage();
-                                         if (message.first != "") {
-                                             auto &tbl = this->db_manager.get_table(config[0].key);
-                                             auto row = createRow(message.second);
-                                             tbl.insert(row);
+    send_threads.push_back(std::make_shared<smart_thread<std::thread>>(
+            [this]() {
+                this->messengers[config[0].type_name + "_READ"]->disconnect();
+                auto &tbl = this->db_manager.get_table(config[0].key);
+                tbl.disable_queue();
+            },
+            [this]() {
+                auto messenger = this->messengers[
+                        config[0].type_name + "_READ"];
+                try {
+                    while (1) {
+                        std::pair<std::string, std::string> message = messenger->getMessage();
+                        if (message.first != "") {
+                            auto &tbl = this->db_manager.get_table(config[0].key);
+                            auto row = createRow(tbl,message.second);
+                            tbl.insert(row);
+                            std::cout << "PRINT" << std::endl;
+                            tbl.print();
 
-                                             tbl.print();
+                        }
+                    }
+                }catch(mqtt_disconnect_exception & e){
+                    std::cout<<"go out"<<std::endl;
+                }
+            }));
 
-                                         }
-                                     }
-                                 });
+    received_threads.push_back(std::make_shared<smart_thread<std::thread>>(
+            [this]() {
+                this->messengers[config[0].type_name + "_SEND"]->disconnect();
+                auto &tbl = this->db_manager.get_table(config[0].key);
+                tbl.disable_queue();
+            },
+            [this]() {
+                auto messenger = this->messengers[config[0].type_name + "_SEND"];
+                auto &tbl = this->db_manager.get_table(config[0].key);
+                auto condition = config[0].send_event.when;
+                auto preparation = config[0].send_event.prepare;
+                tbl.create_trigger(condition, preparation);
+                try {
+                    while (1) {
+                        auto trigger = tbl.get_event();
+                        auto message = trigger->get_message(config[0].send_event.message);
+                        messenger->publish(config[0].send_event.topic, message);
 
-    smart_thread<std::thread> s2([this]() {
-                                     this->messengers[config[0].type_name + "_SEND"]->disconnect();
-                                 },
-                                 [this]() {
-                                     auto messenger = this->messengers[config[0].type_name + "_SEND"];
-                                     auto &tbl = this->db_manager.get_table(config[0].key);
-                                     auto condition = config[0].send_event.when;
-                                     auto preparation = config[0].send_event.prepare;
-                                     tbl.create_trigger(condition,preparation);
+                    }
+                }catch(message_queue_deactivate_exception & e){
+                    std::cout<<"go out"<<std::endl;
+                }
+            }));
+            received_threads[0]->get().join();
+            send_threads[0]->get().join();
 
-                                     while (1) {
-                                         auto trigger = tbl.get_event();
-                                         auto message = trigger->get_message(config[0].send_event.message);
-                                         messenger->publish(config[0].send_event.topic, message);
-                                         // AT THIS PART IS POSSIBLE TO USE AST_NODE to call preparation
-                                         /*
-                                         std::string cmd_raw = config[0].send_event.prepare;
-                                         if (cmd_raw.find("mean(") != std::string::npos) {
-                                             std::size_t pos = cmd_raw.find("mean(") + 5;
-                                             std::size_t posEnd = cmd_raw.find(")");
-
-                                             std::string column_name = cmd_raw.substr(pos, posEnd - pos);
-                                             double result = 0;
-                                             int count = 0;
-                                             tbl.aggregate_table(column_name, [&](base_storage_object &type) {
-                                                 if (std::holds_alternative<storage_real>(type)) {
-                                                     result += std::get<storage_real>(type).get_value();
-                                                     count++;
-                                                 }
-                                             });
-                                             double mean = result / count;
-
-                                             messenger->publish(config[0].send_event.topic, std::to_string(mean));
-                                         } else {
-                                             messenger->publish(config[0].send_event.topic, event);
-                                         }
-*/
-
-                                     }
-                                 });
-
-    s1.get().join();
-    s2.get().join();
 
 }

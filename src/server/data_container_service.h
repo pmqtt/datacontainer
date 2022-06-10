@@ -5,11 +5,12 @@
 #ifndef DATACONTAINER_DATA_CONTAINER_SERVICE_H
 #define DATACONTAINER_DATA_CONTAINER_SERVICE_H
 
-#include "../typeconfig/type_defintion_file.h"
 #include "../api/format.h"
-#include "../connector/mqtt_messenger.h"
 #include "../api/smart_thread.h"
+#include "../connector/mqtt_messenger.h"
 #include "../storage/storage.h"
+#include "../typeconfig/type_defintion_file.h"
+
 #include <map>
 #include <tuple>
 #include <string>
@@ -23,7 +24,9 @@ private:
 public:
     data_container_service(const std::vector<yaml_type_node> & cfg,  chakra::storage_manager & mgr) : config(cfg), db_manager(mgr){ }
     void run();
-    std::vector<std::pair<std::string,base_storage_object>> createRow(const std::string &msg);
+    std::vector<std::pair<std::string,base_storage_object>> createRow(chakra::storage_table & tbl,const std::string &msg);
+    std::vector<std::shared_ptr<smart_thread<std::thread>>> send_threads;
+    std::vector<std::shared_ptr<smart_thread<std::thread>>> received_threads;
 
 };
 

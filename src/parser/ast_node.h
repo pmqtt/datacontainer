@@ -15,6 +15,7 @@
 #include <string>
 #include <variant>
 #include <vector>
+#include <iomanip>
 
 struct empty_result{};
 
@@ -53,29 +54,6 @@ struct if_node : public ast_node{
     boost::optional< ASTNodePtr > else_block;
 
 };
-
-struct to_string_visitor{
-    std::string operator()(bool x){
-        if(x) return "true;";
-        return "false";
-    }
-    std::string  operator()(double x){
-        return std::to_string(x);
-    }
-    std::string  operator()(std::string x){
-        return x;
-    }
-    std::string  operator()(empty_result & x){
-        UNUSED(x);
-        return "";
-    }
-
-    std::string  operator()(std::vector<arg_result> & x){
-        UNUSED(x);
-        throw std::runtime_error("std::vector<arg_result> not possible to cast into string");
-    }
-};
-
 
 
 

@@ -4,25 +4,9 @@
 #include "../src/storage/storage.h"
 #include <boost/test/included/unit_test.hpp>
 #include "../src/parser/constraint_grammar.h"
+#include "../src/parser/ast_type_helpers.h"
 
-struct result_visitor{
-    std::string input;
-    void operator()(bool x){
-        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << x << std::endl;
-    }
-    void operator()(double x){
-        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << x << std::endl;
-    }
-    void operator()(std::string x){
-        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << std::quoted(x) << std::endl;
-    }
-    void operator()(empty_result x){
-        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = "<< std::endl;
-    }
-    void operator()(std::vector<arg_result> & x){
-        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << "std::vector<arg_result>" << std::endl;
-    }
-};
+
 
 
 

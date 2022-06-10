@@ -7,9 +7,11 @@
 std::map<std::string,std::function<evaluation_result(chakra::storage_table & ,const std::vector<arg_result> & arguments)>> built_in_functions{
         {"constante",[](chakra::storage_table & tbl,const std::vector<arg_result> & arguments) -> evaluation_result{
             UNUSED(arguments);
+            UNUSED(tbl);
             return 3.0;
         }},
         {"identity",[](chakra::storage_table & tbl,const std::vector<arg_result> & arguments) -> evaluation_result{
+            UNUSED(tbl);
             return std::visit([](auto & x){
                 evaluation_result res =x;
                 return res;
@@ -22,7 +24,6 @@ std::map<std::string,std::function<evaluation_result(chakra::storage_table & ,co
                 int count = 0;
                 std::cout<<"mean parameter:"<<std::get<std::string>(arguments[0])<<std::endl;
                 tbl.aggregate_table(std::get<std::string>(arguments[0]), [&](base_storage_object &type) {
-
                     if (std::holds_alternative<storage_real>(type)) {
                         result += std::get<storage_real>(type).get_value();
                         count++;
@@ -40,6 +41,7 @@ std::map<std::string,std::function<evaluation_result(chakra::storage_table & ,co
                 int count = 0;
                 std::cout<<"count parameter:"<<std::get<std::string>(arguments[0])<<std::endl;
                 tbl.aggregate_table(std::get<std::string>(arguments[0]), [&](base_storage_object &type) {
+                    UNUSED(type);
                     count++;
                 });
 

@@ -2,6 +2,7 @@
 // Created by cefour on 09.06.22.
 //
 #include "table_trigger.h"
+#include "../parser/ast_type_helpers.h"
 
 #include <regex>
 

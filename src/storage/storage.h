@@ -66,6 +66,7 @@ namespace chakra{
     private:
         std::size_t find_column_index(const std::string& name);
     public:
+        ~storage_table();
         storage_table();
         storage_table( base_catalog_item * item);
 
@@ -84,6 +85,7 @@ namespace chakra{
 
     public:
         std::shared_ptr<table_trigger> get_event();
+        void disable_queue();
     public:
         void print();
 
