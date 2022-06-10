@@ -1,5 +1,7 @@
 #include "storage.h"
+#include "table_trigger.h"
 #include "../exceptions/storage_node_insertion_exception.h"
+
 
 
 chakra::base_catalog_item chakra::make_catalog_item(chakra::CATALOG_ITEM_TYPE item) {
@@ -65,6 +67,7 @@ std::size_t chakra::storage_table::find_column_index(const std::string &name) {
     throw std::out_of_range("Column name " + name + " not found in header description");
 }
 
+chakra::storage_table::storage_table(){}
 
 chakra::storage_table::storage_table(base_catalog_item *item)
         : tbl(item) {
@@ -94,6 +97,11 @@ void chakra::storage_table::insert(const std::vector<std::pair<std::string, base
                 content[header_description[x.first].first] = x.second;
             }
             std::get<key_value_container>(*tbl)[key] = content;
+            for(auto & trigger_item: trigger_container){
+                if(trigger_item->trigger(*this)){
+                    queue.push(trigger_item);
+                }
+            }
         }
     } else {
         throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
@@ -129,17 +137,27 @@ void chakra::storage_table::aggregate_table(const std::string &column_name,
                                             const std::function<void(base_storage_object &item)> &func) {
     auto key_value_store = std::get<key_value_container>(*tbl);
     std::size_t pos = find_column_index(column_name);
-    std::list<std::vector<base_storage_object>> allItems = key_value_store.convert_to_list();
-    for (auto &iter: allItems) {
-        func(iter[pos]);
+    for( auto iter : key_value_store){
+        std::cout<<"POSITION:"<<pos<<std::endl;
+        auto &x = iter.second[pos];
+        func(x);
     }
+
+    /*std::list<std::vector<base_storage_object>> allItems = key_value_store.convert_to_list();
+    for (auto &iter: allItems) {
+        std::visit([&](auto &x){
+            std::cout <<"INSERT VALUE:" <<x.get_value();
+
+        },iter[pos]);
+        func(iter[pos]);
+    }*/
 }
 
 chakra::base_catalog_item *chakra::storage_table::get_inner_table() const {
     return tbl;
 }
 
-std::string chakra::storage_table::get_event() {
+std::shared_ptr<table_trigger> chakra::storage_table::get_event() {
     return queue.pop();
 }
 
@@ -170,5 +188,10 @@ void chakra::storage_table::print() {
     std::cout
             << "-----------------------------------------------------------------------------------"
             << std::endl;
+}
+
+void chakra::storage_table::create_trigger(const ASTNodePtr & condition,const std::vector<ASTNodePtr> & preparation){
+    auto trigger = std::make_shared<table_trigger>(condition, preparation);
+    trigger_container.push_back(trigger);
 }
 

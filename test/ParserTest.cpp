@@ -16,6 +16,9 @@ struct result_visitor{
     void operator()(std::string x){
         std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << std::quoted(x) << std::endl;
     }
+    void operator()(empty_result x){
+        std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = "<< std::endl;
+    }
     void operator()(std::vector<arg_result> & x){
         std::cout << std::boolalpha<<"evaluate( "<<std::quoted(input)<< " ) = " << "std::vector<arg_result>" << std::endl;
     }

@@ -16,9 +16,11 @@
 #include <variant>
 #include <vector>
 
+struct empty_result{};
 
-using arg_result = std::variant<bool,double,std::string>;
-using evaluation_result = std::variant<bool,double,std::string,std::vector<arg_result>>;
+using arg_result = std::variant<bool,double,std::string,empty_result>;
+using evaluation_result = std::variant<bool,double,empty_result,std::string,std::vector<arg_result>>;
+
 
 
 class ast_node
@@ -52,7 +54,27 @@ struct if_node : public ast_node{
 
 };
 
+struct to_string_visitor{
+    std::string operator()(bool x){
+        if(x) return "true;";
+        return "false";
+    }
+    std::string  operator()(double x){
+        return std::to_string(x);
+    }
+    std::string  operator()(std::string x){
+        return x;
+    }
+    std::string  operator()(empty_result & x){
+        UNUSED(x);
+        return "";
+    }
 
+    std::string  operator()(std::vector<arg_result> & x){
+        UNUSED(x);
+        throw std::runtime_error("std::vector<arg_result> not possible to cast into string");
+    }
+};
 
 
 

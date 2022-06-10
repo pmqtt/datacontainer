@@ -13,6 +13,9 @@ struct argument_result_visitor{
     arg_result operator()(std::string x){
         return x;
     }
+    arg_result operator()(empty_result x){
+        return x;
+    }
     arg_result operator()(std::vector<arg_result> & x){
         throw std::runtime_error("not valid cast");
     }
@@ -20,10 +23,10 @@ struct argument_result_visitor{
 
 evaluation_result argument_node::evaluate(chakra::storage_table & tbl) {
     auto first_argument = arg->evaluate(tbl);
-    bool is_empty = std::holds_alternative<std::string>(first_argument);
+    bool is_empty = std::holds_alternative<empty_result>(first_argument);
     std::vector<arg_result> result;
     if( is_empty ){
-        arg_result tmp = "";
+        empty_result tmp;
         result.push_back(tmp);
         return result;
     }

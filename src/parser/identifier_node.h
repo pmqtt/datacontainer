@@ -14,7 +14,7 @@ public:
 
     evaluation_result evaluate(chakra::storage_table & tbl) {
         UNUSED(tbl);
-        return -1.0;
+        return name;
     }
 
 private:

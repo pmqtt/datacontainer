@@ -39,6 +39,7 @@ add_compile_options(-Wall -Wextra)
 
 add_library(OBJECT_LIB OBJECT ${ALL_OBJ} )
 
+
 add_executable(datacontainer src/main.cpp $<TARGET_OBJECTS:OBJECT_LIB>)
 string(REPLACE "." "" BOOST_PYTHON_VERSION ${Boost_PYTHON_VERSION})
 
@@ -59,7 +60,7 @@ foreach(testSrc ${TEST_SRCS})
         get_filename_component(testName ${testSrc} NAME_WE)
         #Add compile target
         add_executable(${testName} ${testSrc} $<TARGET_OBJECTS:OBJECT_LIB>)
-        target_link_libraries(${testName}  ${Boost_LIBRARIES} pthread ${YAML_CPP_LIBRARIES} cpprestsdk::cpprest  paho-mqttpp3 paho-mqtt3c paho-mqtt3cs paho-mqtt3a paho-mqtt3as Python3::Python  boost_python${BOOST_PYTHON_VERSION})
+        target_link_libraries(${testName}  ${Boost_LIBRARIES} pthread ${YAML_CPP_LIBRARIES} cpprestsdk::cpprest  paho-mqttpp3 paho-mqtt3c paho-mqtt3cs paho-mqtt3a paho-mqtt3as Python3::Python  boost_python${BOOST_PYTHON_VERSION} -fprofile-arcs)
         #I like to move testing binaries into a testBin directory
         set_target_properties(${testName} PROPERTIES RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_CURRENT_SOURCE_DIR}/test/bin)
 
@@ -68,6 +69,7 @@ foreach(testSrc ${TEST_SRCS})
         add_test(NAME ${testName}
                 WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test/bin
                 COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/test/bin/${testName} )
+        target_compile_options(${testName} PUBLIC -g -fprofile-arcs -ftest-coverage)
 
 endforeach(testSrc)
 

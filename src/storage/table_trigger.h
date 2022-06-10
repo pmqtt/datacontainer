@@ -5,29 +5,25 @@
 #ifndef DATACONTAINER_TABLE_OBSERVER_H
 #define DATACONTAINER_TABLE_OBSERVER_H
 
+#include "storage.h"
+#include "../parser/ast_node.h"
 #include <functional>
 
+
 struct table_trigger{
-    virtual void trigger() = 0;
-    virtual void execute(const std::function<void()> &func) = 0;
+    ASTNodePtr condition;
+    std::vector<ASTNodePtr> preparation;
+    std::map<std::string,evaluation_result> value_map;
+
+    table_trigger(const ASTNodePtr & cond, const std::vector<ASTNodePtr> & prep );
+
+    virtual ~table_trigger();
+    virtual bool trigger(chakra::storage_table & tbl);
+    virtual void execute(chakra::storage_table & tbl);
+    virtual std::string get_message(const std::string & message_template);
 };
 
-struct insert_count_trigger : public table_trigger{
-    insert_count_trigger() : should_execute(false){}
-    void trigger(){
-        should_execute = true;
-    }
-    void execute(const std::function<void()> &func){
-        if(should_execute){
-            func();
-        }
-    };
 
-
-
-private:
-    bool should_execute;
-};
 
 
 

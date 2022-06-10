@@ -30,5 +30,5 @@ TEMPERATURE_SENSOR_01:
     prepare:
       - mean(TEMPERATURE)
       - mean(TEMPERATURE) + 10
-    message: $1 $2
+    message: mean=$1 mean+10=$2
     when: count(TEMPERATURE) >= 3

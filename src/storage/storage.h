@@ -13,6 +13,8 @@
 #include "property.h"
 #include "storage_object.h"
 
+
+
 #include <map>
 #include <memory>
 #include <stdexcept>
@@ -20,6 +22,9 @@
 #include <vector>
 
 
+class table_trigger;
+class ast_node;
+using ASTNodePtr = std::shared_ptr<ast_node>;
 
 namespace chakra{
     using list_container = std::list<base_storage_object>;
@@ -52,7 +57,8 @@ namespace chakra{
         std::size_t header_size;
     private:
         int index;
-        message_queue<std::string> queue;
+        message_queue<std::shared_ptr<table_trigger>> queue;
+        std::vector<std::shared_ptr<table_trigger>> trigger_container;
 
     public:
         void insert_header_description(const header_desc & desc);
@@ -60,7 +66,7 @@ namespace chakra{
     private:
         std::size_t find_column_index(const std::string& name);
     public:
-        storage_table() = default;
+        storage_table();
         storage_table( base_catalog_item * item);
 
     public:
@@ -72,11 +78,12 @@ namespace chakra{
         std::vector<base_storage_object> find(const std::chrono::milliseconds & key);
 
     public:
+        void create_trigger(const ASTNodePtr & condition,const std::vector<ASTNodePtr> & preparation);
         std::string create_index(int value);
         void aggregate_table(const std::string & column_name, const std::function<void(base_storage_object & item)> & func);
 
     public:
-        std::string get_event();
+        std::shared_ptr<table_trigger> get_event();
     public:
         void print();
 

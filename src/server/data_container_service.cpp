@@ -2,6 +2,7 @@
 // Created by cefour on 12.04.22.
 //
 #include "data_container_service.h"
+#include "../storage/table_trigger.h"
 
 
 #include <iostream>
@@ -55,10 +56,15 @@ void data_container_service::run() {
                                  [this]() {
                                      auto messenger = this->messengers[config[0].type_name + "_SEND"];
                                      auto &tbl = this->db_manager.get_table(config[0].key);
+                                     auto condition = config[0].send_event.when;
+                                     auto preparation = config[0].send_event.prepare;
+                                     tbl.create_trigger(condition,preparation);
 
                                      while (1) {
-                                         std::string event = tbl.get_event();
-                                          // AT THIS PART IS POSSIBLE TO USE AST_NODE to call preparation
+                                         auto trigger = tbl.get_event();
+                                         auto message = trigger->get_message(config[0].send_event.message);
+                                         messenger->publish(config[0].send_event.topic, message);
+                                         // AT THIS PART IS POSSIBLE TO USE AST_NODE to call preparation
                                          /*
                                          std::string cmd_raw = config[0].send_event.prepare;
                                          if (cmd_raw.find("mean(") != std::string::npos) {
