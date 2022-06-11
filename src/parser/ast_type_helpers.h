@@ -7,42 +7,41 @@
 #include "ast_node.h"
 
 struct argument_result_visitor{
-    arg_result operator()(bool x){
+    arg_result operator()(const bool x){
         return x;
     }
-    arg_result operator()(double x){
+    arg_result operator()(const double x){
         return x;
     }
-    arg_result operator()(std::string x){
+    arg_result operator()(const std::string& x){
         return x;
     }
-    arg_result operator()(empty_result x){
+    arg_result operator()(const empty_result & x){
         return x;
     }
-    arg_result operator()(std::vector<arg_result> & x){
+    arg_result operator()(const std::vector<arg_result> & x){
         UNUSED(x);
         throw std::runtime_error("not valid cast");
     }
 };
 
-
 struct to_string_visitor{
-    std::string operator()(bool x){
+    std::string operator()(const bool &x){
         if(x) return "true;";
         return "false";
     }
-    std::string  operator()(double x){
+    std::string  operator()(const double &x){
         return std::to_string(x);
     }
-    std::string  operator()(std::string x){
+    std::string  operator()(const std::string &x){
         return x;
     }
-    std::string  operator()(empty_result & x){
+    std::string  operator()(const empty_result & x){
         UNUSED(x);
         return "";
     }
 
-    std::string  operator()(std::vector<arg_result> & x){
+    std::string  operator()(const std::vector<arg_result> & x){
         UNUSED(x);
         throw std::runtime_error("std::vector<arg_result> not possible to cast into string");
     }
@@ -69,6 +68,10 @@ struct result_visitor{
     }
 };
 
+namespace ptl{
+    arg_result cast(const evaluation_result & res);
+    std::string to_string(const evaluation_result & res);
+}
 
 
 #endif //DATACONTAINER_AST_TYPE_HELPERS_H

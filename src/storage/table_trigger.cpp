@@ -38,8 +38,7 @@ void table_trigger::execute(chakra::storage_table & tbl){
 std::string table_trigger::get_message(const std::string & message_template){
     std::string result = message_template;
     for(auto [key, value]: value_map) {
-        to_string_visitor visitor;
-        result = std::regex_replace(result, std::regex(key), std::visit(visitor,value));
+        result = std::regex_replace(result, std::regex(key), ptl::to_string(value));
     }
     return result;
 }

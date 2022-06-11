@@ -22,6 +22,10 @@ chakra::base_catalog_item chakra::make_catalog_item(chakra::CATALOG_ITEM_TYPE it
             base_catalog_item i = chakra::table_container{};
             return i;
         }
+        case CATALOG_ITEM_TYPE::CATALOG_KEY_TABLE:{
+            base_catalog_item i = chakra::key_table_container{};
+            return i;
+        }
         default:
             break;
     }

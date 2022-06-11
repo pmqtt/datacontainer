@@ -175,6 +175,15 @@ namespace YAML {
 
         static bool decode(const Node& type_node, yaml_type_node& yaml_type) {
             load_node_optional<std::string>("expire_in", &(yaml_type.expire_in), type_node);
+            std::string type = "";
+            yaml_type.type = chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE;
+            load_node_optional<std::string>("type", &(type), type_node);
+            if(type !=""){
+                if(type == "key_table"){
+                    yaml_type.type = chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_TABLE;
+                }
+            }
+
             yaml_type.key = load_node<std::string>("key", type_node);
             YAML::Node valueItems = load_node<YAML::Node>("values", type_node);
             for (const auto &values: valueItems) {

@@ -12,6 +12,7 @@
 #include "function_node.h"
 #include "identifier_node.h"
 #include "argument_node.h"
+#include "if_node.h"
 
 #include <iostream>
 #include <iomanip>

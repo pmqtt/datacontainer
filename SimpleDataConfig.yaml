@@ -5,6 +5,7 @@ types:
 
 
 TEMPERATURE_SENSOR_01:
+  type: key_table
   expire_in: 20min
   key: T_S01
   name: TEMPERATURE_SENSOR

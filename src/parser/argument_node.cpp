@@ -14,15 +14,13 @@ evaluation_result argument_node::evaluate(chakra::storage_table & tbl) {
         result.push_back(tmp);
         return result;
     }
-    argument_result_visitor vis;
-    arg_result casted_argument = std::visit(vis,first_argument);
-    result.push_back(casted_argument);
+
+    result.push_back(ptl::cast(first_argument));
 
 
     for(auto & argument: args){
         auto iter_argument = argument->evaluate(tbl);
-        casted_argument = std::visit(vis,iter_argument);
-        result.push_back(casted_argument);
+        result.push_back(ptl::cast(iter_argument));
     }
 
     return result;

@@ -8,12 +8,13 @@
 #include "../exceptions/typedef_exception.h"
 #include "../parser/constraint_grammar.h"
 #include "../storage/data_types.h"
+#include "../storage/storage.h"
 #include "../storage/storage_object.h"
 #include "../server/value_command.h"
 #include "yaml-cpp/yaml.h"
 #include <string>
 
-
+//TODO: Refector this function to std::optional
 template<class T>
 void load_node_optional(const std::string &node_name, T* value, const YAML::Node & node){
     *value = node[node_name].as<T>();
@@ -123,6 +124,7 @@ struct yaml_values_node{
 };
 
 struct yaml_type_node{
+    chakra::CATALOG_ITEM_TYPE type;
     std::string expire_in;
     std::string type_name;
     std::string key;
