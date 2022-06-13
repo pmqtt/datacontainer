@@ -92,7 +92,6 @@ void chakra::storage_table::insert(const base_storage_object &obj) {
 void chakra::storage_table::insert(const std::vector<std::pair<std::string, base_storage_object>> &entry) {
     if (std::holds_alternative<key_value_container>(*tbl)) {
         key_value_container &ctbl = std::get<key_value_container>(*tbl);
-
         index_value_type key = assign_to_index_value(entry[0].second);
         if (ctbl[key].empty()) {
             std::vector<base_storage_object> content;
@@ -107,7 +106,18 @@ void chakra::storage_table::insert(const std::vector<std::pair<std::string, base
                 }
             }
         }
-    } else {
+    }else if(std::holds_alternative<key_table_container>(*tbl)){
+        key_table_container &ctbl = std::get<key_table_container>(*tbl);
+        index_value_type key = assign_to_index_value(entry[0].second);
+        std::vector<base_storage_object> content;
+        content.resize(header_size);
+        for (const auto &x: entry) {
+            content[header_description[x.first].first] = x.second;
+        }
+        std::get<key_table_container>(*tbl)[key].push_back(content);
+
+    }
+    else {
         throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
     }
 }
@@ -162,7 +172,8 @@ std::shared_ptr<table_trigger> chakra::storage_table::get_event() {
 }
 
 void chakra::storage_table::print() {
-    auto key_value_store = std::get<key_value_container>(*tbl);
+
+
     auto header_as_list = header_description.convert_to_list();
     std::vector<std::string> header_keys(header_as_list.size());
 
@@ -171,20 +182,39 @@ void chakra::storage_table::print() {
         header_keys[iter->first] = key;
         ++iter;
     }
-    std::cout
-            << "-----------------------------------------------------------------------------------"
-            << std::endl;
-    for(auto key : header_keys){
-        std::cout << key << " | ";
-    }
-    std::cout<<"\n=================================================================================="<<std::endl;
-
-    for (auto [key, value]: key_value_store) {
-        for (auto &item: value) {
-            std::visit([](auto &i) { std::cout << i.get_value() <<  " | "; }, item);
+    std::cout<< "-----------------------------------------------------------------------------------"<< std::endl;
+    if(std::holds_alternative<key_value_container>(*tbl)) {
+        for (auto key: header_keys) {
+            std::cout << key << " | ";
         }
-        std::cout<<"\n";
+        std::cout << "\n=================================================================================="<< std::endl;
+
+        auto key_value_store = std::get<key_value_container>(*tbl);
+        for (auto [key, value]: key_value_store) {
+            for (auto &item: value) {
+                std::visit([](auto &i) { std::cout << i.get_value() << " | "; }, item);
+            }
+            std::cout << "\n";
+        }
+    }else if (std::holds_alternative<key_table_container>(*tbl)){
+        auto key_table_store = std::get<key_table_container>(*tbl);
+        for (auto [key, value]: key_table_store) {
+           std::cout<<"Primary Key |";
+            for (auto k: header_keys) {
+                std::cout << k << " | ";
+            }
+            std::cout << "\n=================================================================================="<< std::endl;
+            std::visit([](auto &k){ std::cout<<k.get_value() << " | "; },key);
+
+            for (auto &row: value) {
+                for(auto & col: row) {
+                    std::visit([](auto &i) { std::cout << i.get_value() << " | "; }, col);
+                }
+                std::cout << "\n\t";
+            }
+        }
     }
+
     std::cout
             << "-----------------------------------------------------------------------------------"
             << std::endl;

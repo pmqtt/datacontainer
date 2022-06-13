@@ -126,4 +126,15 @@ BOOST_AUTO_TEST_SUITE(FormatTestSuite)
 
     }
 
+    BOOST_AUTO_TEST_CASE(FORMAT_INTERPRET_TEST_WITH_FIRST_STRING_ARGUMENT){
+        format f("%s %r %s");
+        BOOST_CHECK_MESSAGE(f.interpret("Wohnzimmer 19.7 HALLOWELT"),"Should be true not false");
+        std::vector<std::shared_ptr<format_type>> list = f.get_formate_list();
+        BOOST_CHECK_MESSAGE(list.size() == 5, "List size should 5 not " + std::to_string(list.size()));
+        std::shared_ptr<format_type> type = list[0];
+        auto word1 = dynamic_cast<format_type_string*>(type.get());
+        BOOST_CHECK(word1 != nullptr);
+        BOOST_CHECK(std::get<storage_string>(word1->create_base_storage_object()).get_value()=="Wohnzimmer");
+    }
+
 BOOST_AUTO_TEST_SUITE_END()

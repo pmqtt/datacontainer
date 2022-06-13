@@ -14,10 +14,12 @@
 #include "yaml-cpp/yaml.h"
 #include <string>
 
-//TODO: Refector this function to std::optional
 template<class T>
-void load_node_optional(const std::string &node_name, T* value, const YAML::Node & node){
-    *value = node[node_name].as<T>();
+std::optional<T> load_node_optional(const std::string &node_name, const YAML::Node & node){
+    if(!node[node_name].IsDefined()){
+        return {};
+    }
+    return {node[node_name].as<T>()};
 }
 
 template<class T>
@@ -132,7 +134,11 @@ struct yaml_type_node{
     yaml_read_event_node read_event;
     yaml_send_event_node send_event;
 
+    std::vector<chakra::header_item> create_header();
+
+
 };
+
 
 
 

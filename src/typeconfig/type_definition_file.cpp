@@ -1,7 +1,7 @@
 //
 // Created by cefour on 22.04.22.
 //
-
+#include "../api/case_map.h"
 #include "../api/macro_helper.h"
 #include "../exceptions/typedef_exception.h"
 #include "../storage/property.h"
@@ -174,15 +174,19 @@ namespace YAML {
         }
 
         static bool decode(const Node& type_node, yaml_type_node& yaml_type) {
-            load_node_optional<std::string>("expire_in", &(yaml_type.expire_in), type_node);
-            std::string type = "";
-            yaml_type.type = chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE;
-            load_node_optional<std::string>("type", &(type), type_node);
-            if(type !=""){
-                if(type == "key_table"){
-                    yaml_type.type = chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_TABLE;
-                }
-            }
+            static ptl::case_map<std::string,chakra::CATALOG_ITEM_TYPE> switch_catalog_type (
+            {
+                    {"key_table",chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_TABLE}
+            },       chakra::CATALOG_ITEM_TYPE::CATALOG_KEY_VALUE);
+
+            auto expire_in = load_node_optional<std::string>("expire_in", type_node);
+            yaml_type.expire_in = expire_in.value_or("infinity");
+
+
+            auto datastructure_type = load_node_optional<std::string>("type", type_node).value_or("-");
+            yaml_type.type = switch_catalog_type[datastructure_type];
+
+
 
             yaml_type.key = load_node<std::string>("key", type_node);
             YAML::Node valueItems = load_node<YAML::Node>("values", type_node);
@@ -284,4 +288,13 @@ TYPE_KIND yaml_index_type::get_type_kind() {
 
 base_storage_object yaml_index_type::get_storage_value_type() {
     return storage_string();
+}
+
+
+std::vector<chakra::header_item> yaml_type_node::create_header() {
+    std::vector<chakra::header_item> header;
+    for (auto &iter: values) {
+        header.push_back(chakra::header_item(iter.key,iter.value->get_storage_value_type()));
+    }
+    return header;
 }

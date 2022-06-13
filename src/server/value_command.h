@@ -58,7 +58,6 @@ struct value_argument_command : public value_command{
         UNUSED(value);
         std::smatch sm;
         std::regex x("\\$[0-9]+");
-        std::cout<<"value:"<<value<<std::endl;
         format fmt(f_def);
         if(fmt.interpret(value)) {
             auto format_map = fmt.get_arguments_map();

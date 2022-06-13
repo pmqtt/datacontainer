@@ -48,7 +48,6 @@ void data_container_service::run() {
                                 auto &tbl = this->db_manager.get_table(config[0].key);
                                 auto row = createRow(tbl, message.second);
                                 tbl.insert(row);
-                                std::cout << "PRINT" << std::endl;
                                 tbl.print();
 
                             }

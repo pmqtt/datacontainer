@@ -1,0 +1,35 @@
+types:
+  - TEMPERATURE_SENSOR_01
+
+
+
+
+TEMPERATURE_SENSOR_01:
+  type: key_table
+  expire_in: 20min
+  key: T_S01
+  name: TEMPERATURE_SENSOR
+  values:
+    - ID: index
+    - TIMESTAMP: string
+    - TEMPERATURE: real
+    - MESSAGE: string
+  read_event:
+    type: mqtt
+    broker: localhost:1883
+    subscribe: SENSOR/01/TEMPERATURE
+    format: "%s %r %s"
+    insert:
+      - ID: $1
+      - TIMESTAMP: timestamp
+      - TEMPERATURE: $2
+      - MESSAGE: $3
+  send_event:
+    type: mqtt
+    broker: localhost:1883
+    topic: CALCULATED
+    prepare:
+      - mean(TEMPERATURE)
+      - mean(TEMPERATURE) + 10
+    message: mean=$1 mean+10=$2
+    when: count(TEMPERATURE) >= 3

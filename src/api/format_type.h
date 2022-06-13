@@ -107,6 +107,7 @@ struct format_type_real: public format_type{
 struct format_type_string: public format_type{
     std::string argument;
     bool accept(const char x) override {
+        if(::isblank(x)) return false;
         argument += x;
         return true;
     }
