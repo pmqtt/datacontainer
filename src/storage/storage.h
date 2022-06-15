@@ -90,12 +90,18 @@ namespace chakra{
 
     public:
         base_catalog_item *get_inner_table()const;
-
-
         void notify_trigger();
-
         std::vector<base_storage_object>
         create_row_content(const std::vector<std::pair<std::string, base_storage_object>> &entry);
+
+    private:
+        template<class FUNC>
+        void insert_to_key_container_kind(const std::vector<std::pair<std::string, base_storage_object>> &entry,const FUNC & func){
+            index_value_type key = assign_to_index_value(entry[0].second);
+            std::vector<base_storage_object> content = create_row_content(entry);
+            func(key,content);
+            notify_trigger();
+        }
     };
 
     class storage_manager{

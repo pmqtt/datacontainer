@@ -1,6 +1,16 @@
+
 #include "storage.h"
 #include "table_trigger.h"
+#include "../api/variant.h"
 #include "../exceptions/storage_node_insertion_exception.h"
+
+
+
+#define INSERT_TO_KEY_CONTAINER(FUNCTION) \
+    insert_to_key_container_kind(entry,[&](auto & key,auto & content){ \
+        FUNCTION;\
+    })
+
 
 
 
@@ -89,24 +99,16 @@ void chakra::storage_table::insert(const base_storage_object &obj) {
     }
 }
 
+
 void chakra::storage_table::insert(const std::vector<std::pair<std::string, base_storage_object>> &entry) {
-
-    if (std::holds_alternative<key_value_container>(*tbl)) {
-        index_value_type key = assign_to_index_value(entry[0].second);
-        std::vector<base_storage_object> content = create_row_content(entry);
-        std::get<key_value_container>(*tbl)[key] = content;
-        notify_trigger();
-
-    }else if(std::holds_alternative<key_table_container>(*tbl)){
-        index_value_type key = assign_to_index_value(entry[0].second);
-        std::vector<base_storage_object> content = create_row_content(entry);
-        std::get<key_table_container>(*tbl)[key].push_back(content);
-        notify_trigger();
-
-    }
-    else {
+    if(std::holds_alternative<key_value_container>(*tbl)){
+        INSERT_TO_KEY_CONTAINER(std::get<key_value_container>(*tbl)[key] = content);
+    }else if (std::holds_alternative<key_table_container>(*tbl)){
+        INSERT_TO_KEY_CONTAINER(std::get<key_table_container>(*tbl)[key].push_back(content));
+    }else{
         throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
     }
+
 }
 
 std::vector<base_storage_object>
