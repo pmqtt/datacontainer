@@ -13,7 +13,7 @@
 #include <algorithm>
 #include <map>
 
-
+//TODO: extend format specifier for bool int and date_time
 
 
 using format_specifier =  std::map<char,std::shared_ptr<format_type>>;
