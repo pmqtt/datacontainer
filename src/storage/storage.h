@@ -92,6 +92,10 @@ namespace chakra{
         base_catalog_item *get_inner_table()const;
 
 
+        void notify_trigger();
+
+        std::vector<base_storage_object>
+        create_row_content(const std::vector<std::pair<std::string, base_storage_object>> &entry);
     };
 
     class storage_manager{

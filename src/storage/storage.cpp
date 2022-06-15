@@ -90,35 +90,40 @@ void chakra::storage_table::insert(const base_storage_object &obj) {
 }
 
 void chakra::storage_table::insert(const std::vector<std::pair<std::string, base_storage_object>> &entry) {
+
     if (std::holds_alternative<key_value_container>(*tbl)) {
-        key_value_container &ctbl = std::get<key_value_container>(*tbl);
         index_value_type key = assign_to_index_value(entry[0].second);
-        if (ctbl[key].empty()) {
-            std::vector<base_storage_object> content;
-            content.resize(header_size);
-            for (const auto &x: entry) {
-                content[header_description[x.first].first] = x.second;
-            }
-            std::get<key_value_container>(*tbl)[key] = content;
-            for(auto & trigger_item: trigger_container){
-                if(trigger_item->trigger(*this)){
-                    queue.push(trigger_item);
-                }
-            }
-        }
+        std::vector<base_storage_object> content = create_row_content(entry);
+        std::get<key_value_container>(*tbl)[key] = content;
+        notify_trigger();
+
     }else if(std::holds_alternative<key_table_container>(*tbl)){
-        key_table_container &ctbl = std::get<key_table_container>(*tbl);
         index_value_type key = assign_to_index_value(entry[0].second);
-        std::vector<base_storage_object> content;
-        content.resize(header_size);
-        for (const auto &x: entry) {
-            content[header_description[x.first].first] = x.second;
-        }
+        std::vector<base_storage_object> content = create_row_content(entry);
         std::get<key_table_container>(*tbl)[key].push_back(content);
+        notify_trigger();
 
     }
     else {
         throw not_allowed_method_call_excaption("method call is not allowed, beacause hash_map is not a chakra hash_map");
+    }
+}
+
+std::vector<base_storage_object>
+chakra::storage_table::create_row_content(const std::vector<std::pair<std::string, base_storage_object>> &entry) {
+    std::vector<base_storage_object> content;
+    content.resize(header_size);
+    for (const auto &x: entry) {
+        content[header_description[x.first].first] = x.second;
+    }
+    return content;
+}
+
+void chakra::storage_table::notify_trigger() {
+    for(auto & trigger_item: trigger_container){
+        if(trigger_item->trigger(*this)){
+            queue.push(trigger_item);
+        }
     }
 }
 
